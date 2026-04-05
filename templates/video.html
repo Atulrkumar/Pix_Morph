@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Editor ✨ | PixMorph</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0f;
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                #f093fb 0%, 
+                #f5576c 25%, 
+                #4facfe 50%, 
+                #00f2fe 75%, 
+                #667eea 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            padding: 10px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        /* Main Layout */
+        .editor-layout {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 20px;
+            min-height: calc(100vh - 180px);
+        }
+
+        /* Upload Zone */
+        .upload-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .upload-zone:hover {
+            border-color: #f093fb;
+            background: rgba(240, 147, 251, 0.05);
+        }
+
+        .upload-zone.hidden {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .upload-zone h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .upload-zone p {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 20px;
+        }
+
+        /* Video Preview Area */
+        .preview-area {
+            display: none;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+
+        .preview-area.active {
+            display: flex;
+        }
+
+        .video-container {
+            position: relative;
+            background: #000;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-container video {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .video-container canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        /* Video Controls */
+        .video-controls {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .timeline {
+            position: relative;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .timeline-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #f093fb, #f5576c);
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .timeline-scrubber {
+            position: absolute;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: #fff;
+            cursor: ew-resize;
+            z-index: 10;
+        }
+
+        .trim-handle {
+            position: absolute;
+            top: 0;
+            width: 12px;
+            height: 100%;
+            background: #f5576c;
+            cursor: ew-resize;
+            z-index: 5;
+        }
+
+        .trim-handle.start { left: 0; border-radius: 8px 0 0 8px; }
+        .trim-handle.end { right: 0; border-radius: 0 8px 8px 0; }
+
+        .trim-region {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            background: rgba(240, 147, 251, 0.3);
+            border: 2px solid #f093fb;
+            pointer-events: none;
+        }
+
+        .playback-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .play-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #fff;
+            transition: transform 0.2s;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .time-display {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .volume-slider {
+            width: 80px;
+            accent-color: #f093fb;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 20px;
+        }
+
+        .panel-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Tool Buttons */
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .tool-btn {
+            padding: 15px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .tool-btn:hover {
+            background: rgba(240, 147, 251, 0.2);
+            border-color: #f093fb;
+        }
+
+        .tool-btn.active {
+            background: linear-gradient(135deg, rgba(240, 147, 251, 0.3), rgba(245, 87, 108, 0.3));
+            border-color: #f093fb;
+        }
+
+        .tool-btn .icon {
+            font-size: 1.5rem;
+        }
+
+        /* Sliders */
+        .slider-group {
+            margin-bottom: 15px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            cursor: pointer;
+        }
+
+        /* Text Overlay Panel */
+        .text-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #f093fb;
+        }
+
+        .color-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .color-picker {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        /* Export Panel */
+        .export-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .format-select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 0.95rem;
+        }
+
+        .export-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3);
+        }
+
+        .export-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            display: none;
+            margin-top: 15px;
+        }
+
+        .progress-container.active {
+            display: block;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f093fb, #f5576c);
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 10, 15, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #f093fb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Hidden file input */
+        #videoInput, #audioInput {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .editor-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .panel {
+                flex: 1;
+                min-width: 280px;
+            }
+        }
+
+        /* Clips Panel for Merge */
+        .clips-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .clip-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .clip-thumb {
+            width: 60px;
+            height: 34px;
+            background: #000;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .clip-thumb video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .clip-info {
+            flex: 1;
+        }
+
+        .clip-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .clip-duration {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .clip-remove {
+            background: rgba(255, 87, 87, 0.2);
+            border: none;
+            color: #ff5757;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .add-clip-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-clip-btn:hover {
+            border-color: #f093fb;
+            color: #f093fb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <a href="/" class="logo">🎬 PixMorph</a>
+            <nav class="nav-links">
+                <a href="/" class="nav-link">Image Editor</a>
+                <a href="/video" class="nav-link active">Video Editor</a>
+            </nav>
+        </header>
+
+        <!-- Editor Layout -->
+        <div class="editor-layout">
+            <!-- Main Area -->
+            <div class="main-area">
+                <!-- Upload Zone -->
+                <div class="upload-zone" id="uploadZone">
+                    <div class="upload-icon">🎬</div>
+                    <h2>Upload Your Video</h2>
+                    <p>Drag & drop or click to select • MP4, WebM, MOV supported</p>
+                    <button class="tool-btn" style="padding: 15px 30px;">
+                        <span>Choose Video</span>
+                    </button>
+                </div>
+
+                <!-- Preview Area -->
+                <div class="preview-area" id="previewArea">
+                    <div class="video-container">
+                        <video id="videoPlayer" playsinline></video>
+                        <canvas id="overlayCanvas"></canvas>
+                    </div>
+                    
+                    <div class="video-controls">
+                        <div class="timeline" id="timeline">
+                            <div class="trim-region" id="trimRegion"></div>
+                            <div class="timeline-progress" id="timelineProgress"></div>
+                            <div class="trim-handle start" id="trimStart"></div>
+                            <div class="trim-handle end" id="trimEnd"></div>
+                            <div class="timeline-scrubber" id="scrubber"></div>
+                        </div>
+                        
+                        <div class="playback-controls">
+                            <button class="play-btn" id="playBtn">▶</button>
+                            <span class="time-display">
+                                <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+                            </span>
+                            
+                            <div class="volume-control">
+                                <span>🔊</span>
+                                <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.1" value="1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Tools Panel -->
+                <div class="panel">
+                    <div class="panel-title">✂️ Tools</div>
+                    <div class="tool-grid">
+                        <button class="tool-btn" id="trimTool" data-tool="trim">
+                            <span class="icon">✂️</span>
+                            <span>Trim</span>
+                        </button>
+                        <button class="tool-btn" id="mergeTool" data-tool="merge">
+                            <span class="icon">🔗</span>
+                            <span>Merge</span>
+                        </button>
+                        <button class="tool-btn" id="textTool" data-tool="text">
+                            <span class="icon">📝</span>
+                            <span>Text</span>
+                        </button>
+                        <button class="tool-btn" id="audioTool" data-tool="audio">
+                            <span class="icon">🎵</span>
+                            <span>Audio</span>
+                        </button>
+                        <button class="tool-btn" id="speedTool" data-tool="speed">
+                            <span class="icon">⏩</span>
+                            <span>Speed</span>
+                        </button>
+                        <button class="tool-btn" id="rotateTool" data-tool="rotate">
+                            <span class="icon">🔄</span>
+                            <span>Rotate</span>
+                        </button>
+                        <button class="tool-btn" id="cropTool" data-tool="crop">
+                            <span class="icon">📐</span>
+                            <span>Crop</span>
+                        </button>
+                        <button class="tool-btn" id="filterTool" data-tool="filters">
+                            <span class="icon">🎨</span>
+                            <span>Filters</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dynamic Tool Options Panel -->
+                <div class="panel" id="toolOptions" style="display: none;">
+                    <div class="panel-title" id="toolOptionsTitle">Options</div>
+                    <div id="toolOptionsContent"></div>
+                </div>
+
+                <!-- Export Panel -->
+                <div class="panel">
+                    <div class="panel-title">📤 Export</div>
+                    <div class="export-options">
+                        <select class="format-select" id="formatSelect">
+                            <option value="mp4">MP4 (H.264)</option>
+                            <option value="webm">WebM (VP9)</option>
+                            <option value="gif">GIF (Animated)</option>
+                        </select>
+                        <select class="format-select" id="qualitySelect">
+                            <option value="1080">1080p (Full HD)</option>
+                            <option value="720" selected>720p (HD)</option>
+                            <option value="480">480p (SD)</option>
+                        </select>
+                        <button class="export-btn" id="exportBtn" disabled>
+                            <span>🚀</span> Export Video
+                        </button>
+                        
+                        <div class="progress-container" id="progressContainer">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <div class="progress-text" id="progressText">Processing...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loadingText">Loading FFmpeg...</div>
+    </div>
+
+    <!-- Hidden Inputs -->
+    <input type="file" id="videoInput" accept="video/*" multiple>
+    <input type="file" id="audioInput" accept="audio/*">
+
+    <!-- FFmpeg.wasm -->
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
+    <script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
+    
+    <script>
+        // Global state
+        let ffmpeg = null;
+        let ffmpegLoaded = false;
+        let videoFile = null;
+        let videoClips = [];
+        let audioFile = null;
+        let currentTool = null;
+        
+        // Video editing state
+        let trimStart = 0;
+        let trimEnd = 1;
+        let playbackSpeed = 1;
+        let rotation = 0;
+        let filters = { brightness: 0, contrast: 1, saturation: 1 };
+        let textOverlays = [];
+        let muteOriginalAudio = false;
+
+        // DOM Elements
+        const uploadZone = document.getElementById('uploadZone');
+        const previewArea = document.getElementById('previewArea');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const overlayCanvas = document.getElementById('overlayCanvas');
+        const playBtn = document.getElementById('playBtn');
+        const timeline = document.getElementById('timeline');
+        const scrubber = document.getElementById('scrubber');
+        const trimRegion = document.getElementById('trimRegion');
+        const trimStartHandle = document.getElementById('trimStart');
+        const trimEndHandle = document.getElementById('trimEnd');
+        const timelineProgress = document.getElementById('timelineProgress');
+        const currentTimeEl = document.getElementById('currentTime');
+        const durationEl = document.getElementById('duration');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const videoInput = document.getElementById('videoInput');
+        const audioInput = document.getElementById('audioInput');
+        const toolOptions = document.getElementById('toolOptions');
+        const toolOptionsTitle = document.getElementById('toolOptionsTitle');
+        const toolOptionsContent = document.getElementById('toolOptionsContent');
+        const exportBtn = document.getElementById('exportBtn');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingText = document.getElementById('loadingText');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+
+        // Initialize FFmpeg (lazy load - only when needed)
+        async function initFFmpeg() {
+            if (ffmpegLoaded) return true;
+            
+            loadingOverlay.classList.add('active');
+            loadingText.textContent = 'Loading FFmpeg (this may take a moment)...';
+            
+            try {
+                // Check if SharedArrayBuffer is available
+                if (typeof SharedArrayBuffer === 'undefined') {
+                    throw new Error('SharedArrayBuffer not available. Export requires HTTPS or special server headers.');
+                }
+                
+                const { FFmpeg } = FFmpegWASM;
+                const { fetchFile, toBlobURL } = FFmpegUtil;
+                
+                ffmpeg = new FFmpeg();
+                
+                ffmpeg.on('progress', ({ progress, time }) => {
+                    const percent = Math.round(progress * 100);
+                    progressFill.style.width = `${percent}%`;
+                    progressText.textContent = `Processing: ${percent}%`;
+                });
+                
+                ffmpeg.on('log', ({ message }) => {
+                    console.log('FFmpeg:', message);
+                });
+                
+                const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+                await ffmpeg.load({
+                    coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+                    wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+                });
+                
+                ffmpegLoaded = true;
+                loadingOverlay.classList.remove('active');
+                console.log('✅ FFmpeg loaded successfully!');
+                return true;
+            } catch (error) {
+                console.error('Failed to load FFmpeg:', error);
+                loadingOverlay.classList.remove('active');
+                alert(`FFmpeg Error: ${error.message}\n\nNote: Video export requires:\n1. HTTPS connection, OR\n2. Special server headers for SharedArrayBuffer\n\nThe editor preview works, but export needs these requirements.`);
+                return false;
+            }
+        }
+
+        // Format time
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Upload handling
+        uploadZone.addEventListener('click', () => videoInput.click());
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.style.borderColor = '#f093fb';
+        });
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+        });
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('video/')) {
+                handleVideoUpload(files[0]);
+            }
+        });
+
+        videoInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleVideoUpload(e.target.files[0]);
+            }
+        });
+
+        function handleVideoUpload(file) {
+            videoFile = file;
+            const url = URL.createObjectURL(file);
+            videoPlayer.src = url;
+            
+            videoPlayer.onloadedmetadata = () => {
+                uploadZone.classList.add('hidden');
+                previewArea.classList.add('active');
+                exportBtn.disabled = false;
+                
+                durationEl.textContent = formatTime(videoPlayer.duration);
+                trimEnd = 1;
+                updateTrimRegion();
+                
+                // Setup canvas
+                overlayCanvas.width = videoPlayer.videoWidth;
+                overlayCanvas.height = videoPlayer.videoHeight;
+            };
+        }
+
+        // Playback controls
+        playBtn.addEventListener('click', () => {
+            if (videoPlayer.paused) {
+                videoPlayer.play();
+                playBtn.textContent = '⏸';
+            } else {
+                videoPlayer.pause();
+                playBtn.textContent = '▶';
+            }
+        });
+
+        videoPlayer.addEventListener('timeupdate', () => {
+            const progress = videoPlayer.currentTime / videoPlayer.duration;
+            scrubber.style.left = `${progress * 100}%`;
+            timelineProgress.style.width = `${progress * 100}%`;
+            currentTimeEl.textContent = formatTime(videoPlayer.currentTime);
+            
+            // Draw text overlays
+            drawOverlays();
+        });
+
+        videoPlayer.addEventListener('ended', () => {
+            playBtn.textContent = '▶';
+        });
+
+        volumeSlider.addEventListener('input', (e) => {
+            videoPlayer.volume = e.target.value;
+        });
+
+        // Timeline scrubbing
+        let isDraggingScrubber = false;
+        
+        timeline.addEventListener('mousedown', (e) => {
+            const rect = timeline.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;
+            videoPlayer.currentTime = x * videoPlayer.duration;
+        });
+
+        // Trim handles
+        let isDraggingTrimStart = false;
+        let isDraggingTrimEnd = false;
+
+        trimStartHandle.addEventListener('mousedown', (e) => {
+            e.stopPropagation();
+            isDraggingTrimStart = true;
+        });
+
+        trimEndHandle.addEventListener('mousedown', (e) => {
+            e.stopPropagation();
+            isDraggingTrimEnd = true;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDraggingTrimStart && !isDraggingTrimEnd) return;
+            
+            const rect = timeline.getBoundingClientRect();
+            let x = (e.clientX - rect.left) / rect.width;
+            x = Math.max(0, Math.min(1, x));
+            
+            if (isDraggingTrimStart) {
+                trimStart = Math.min(x, trimEnd - 0.05);
+            } else if (isDraggingTrimEnd) {
+                trimEnd = Math.max(x, trimStart + 0.05);
+            }
+            
+            updateTrimRegion();
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDraggingTrimStart = false;
+            isDraggingTrimEnd = false;
+        });
+
+        function updateTrimRegion() {
+            trimStartHandle.style.left = `${trimStart * 100}%`;
+            trimEndHandle.style.left = `${trimEnd * 100 - 1}%`;
+            trimRegion.style.left = `${trimStart * 100}%`;
+            trimRegion.style.width = `${(trimEnd - trimStart) * 100}%`;
+        }
+
+        // Tool selection
+        document.querySelectorAll('.tool-btn[data-tool]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tool = btn.dataset.tool;
+                selectTool(tool);
+                
+                document.querySelectorAll('.tool-btn[data-tool]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        function selectTool(tool) {
+            currentTool = tool;
+            toolOptions.style.display = 'block';
+            
+            switch(tool) {
+                case 'trim':
+                    toolOptionsTitle.textContent = '✂️ Trim Video';
+                    toolOptionsContent.innerHTML = `
+                        <p style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 15px;">
+                            Drag the pink handles on the timeline to set trim points.
+                        </p>
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span>Start: ${formatTime(trimStart * videoPlayer.duration)}</span>
+                                <span>End: ${formatTime(trimEnd * videoPlayer.duration)}</span>
+                            </div>
+                        </div>
+                        <button class="tool-btn" style="width: 100%;" onclick="applyTrim()">
+                            ✂️ Preview Trim
+                        </button>
+                    `;
+                    break;
+                    
+                case 'speed':
+                    toolOptionsTitle.textContent = '⏩ Speed Control';
+                    toolOptionsContent.innerHTML = `
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span>Speed</span>
+                                <span id="speedValue">${playbackSpeed}x</span>
+                            </div>
+                            <input type="range" class="slider" id="speedSlider" min="0.25" max="4" step="0.25" value="${playbackSpeed}">
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="tool-btn" style="flex: 1;" onclick="setSpeed(0.5)">0.5x</button>
+                            <button class="tool-btn" style="flex: 1;" onclick="setSpeed(1)">1x</button>
+                            <button class="tool-btn" style="flex: 1;" onclick="setSpeed(1.5)">1.5x</button>
+                            <button class="tool-btn" style="flex: 1;" onclick="setSpeed(2)">2x</button>
+                        </div>
+                    `;
+                    document.getElementById('speedSlider').addEventListener('input', (e) => {
+                        setSpeed(parseFloat(e.target.value));
+                    });
+                    break;
+                    
+                case 'rotate':
+                    toolOptionsTitle.textContent = '🔄 Rotate & Flip';
+                    toolOptionsContent.innerHTML = `
+                        <div class="tool-grid">
+                            <button class="tool-btn" onclick="rotate(90)">
+                                <span class="icon">↩️</span>
+                                <span>90° Right</span>
+                            </button>
+                            <button class="tool-btn" onclick="rotate(-90)">
+                                <span class="icon">↪️</span>
+                                <span>90° Left</span>
+                            </button>
+                            <button class="tool-btn" onclick="rotate(180)">
+                                <span class="icon">🔃</span>
+                                <span>180°</span>
+                            </button>
+                            <button class="tool-btn" onclick="flipHorizontal()">
+                                <span class="icon">↔️</span>
+                                <span>Flip H</span>
+                            </button>
+                        </div>
+                        <p style="color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 10px;">
+                            Current rotation: ${rotation}°
+                        </p>
+                    `;
+                    break;
+                    
+                case 'filters':
+                    toolOptionsTitle.textContent = '🎨 Filters & Effects';
+                    toolOptionsContent.innerHTML = `
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span>Brightness</span>
+                                <span id="brightnessValue">${filters.brightness}</span>
+                            </div>
+                            <input type="range" class="slider" id="brightnessSlider" min="-1" max="1" step="0.1" value="${filters.brightness}">
+                        </div>
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span>Contrast</span>
+                                <span id="contrastValue">${filters.contrast}</span>
+                            </div>
+                            <input type="range" class="slider" id="contrastSlider" min="0.5" max="2" step="0.1" value="${filters.contrast}">
+                        </div>
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span>Saturation</span>
+                                <span id="saturationValue">${filters.saturation}</span>
+                            </div>
+                            <input type="range" class="slider" id="saturationSlider" min="0" max="3" step="0.1" value="${filters.saturation}">
+                        </div>
+                        <button class="tool-btn" style="width: 100%;" onclick="resetFilters()">Reset Filters</button>
+                    `;
+                    
+                    document.getElementById('brightnessSlider').addEventListener('input', (e) => {
+                        filters.brightness = parseFloat(e.target.value);
+                        document.getElementById('brightnessValue').textContent = filters.brightness;
+                        applyFiltersPreview();
+                    });
+                    document.getElementById('contrastSlider').addEventListener('input', (e) => {
+                        filters.contrast = parseFloat(e.target.value);
+                        document.getElementById('contrastValue').textContent = filters.contrast;
+                        applyFiltersPreview();
+                    });
+                    document.getElementById('saturationSlider').addEventListener('input', (e) => {
+                        filters.saturation = parseFloat(e.target.value);
+                        document.getElementById('saturationValue').textContent = filters.saturation;
+                        applyFiltersPreview();
+                    });
+                    break;
+                    
+                case 'text':
+                    toolOptionsTitle.textContent = '📝 Text Overlay';
+                    toolOptionsContent.innerHTML = `
+                        <input type="text" class="text-input" id="textContent" placeholder="Enter text...">
+                        <div class="color-row">
+                            <input type="color" class="color-picker" id="textColor" value="#ffffff">
+                            <select class="format-select" id="textSize" style="flex: 1;">
+                                <option value="24">Small</option>
+                                <option value="36" selected>Medium</option>
+                                <option value="48">Large</option>
+                                <option value="72">Extra Large</option>
+                            </select>
+                        </div>
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span>Position X</span>
+                                <span id="textXValue">50%</span>
+                            </div>
+                            <input type="range" class="slider" id="textX" min="0" max="100" value="50">
+                        </div>
+                        <div class="slider-group">
+                            <div class="slider-label">
+                                <span>Position Y</span>
+                                <span id="textYValue">90%</span>
+                            </div>
+                            <input type="range" class="slider" id="textY" min="0" max="100" value="90">
+                        </div>
+                        <button class="tool-btn" style="width: 100%;" onclick="addTextOverlay()">+ Add Text</button>
+                        <div id="textOverlaysList" style="margin-top: 15px;"></div>
+                    `;
+                    
+                    document.getElementById('textX').addEventListener('input', (e) => {
+                        document.getElementById('textXValue').textContent = `${e.target.value}%`;
+                    });
+                    document.getElementById('textY').addEventListener('input', (e) => {
+                        document.getElementById('textYValue').textContent = `${e.target.value}%`;
+                    });
+                    break;
+                    
+                case 'audio':
+                    toolOptionsTitle.textContent = '🎵 Audio';
+                    toolOptionsContent.innerHTML = `
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                <input type="checkbox" id="muteOriginal" ${muteOriginalAudio ? 'checked' : ''}>
+                                <span>Mute original audio</span>
+                            </label>
+                        </div>
+                        <button class="tool-btn" style="width: 100%;" onclick="document.getElementById('audioInput').click()">
+                            🎵 Add Background Music
+                        </button>
+                        <div id="audioInfo" style="margin-top: 10px; font-size: 0.85rem; color: rgba(255,255,255,0.7);">
+                            ${audioFile ? `✅ ${audioFile.name}` : 'No audio added'}
+                        </div>
+                    `;
+                    
+                    document.getElementById('muteOriginal').addEventListener('change', (e) => {
+                        muteOriginalAudio = e.target.checked;
+                    });
+                    break;
+                    
+                case 'merge':
+                    toolOptionsTitle.textContent = '🔗 Merge Videos';
+                    toolOptionsContent.innerHTML = `
+                        <p style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 15px;">
+                            Add multiple videos to merge them together.
+                        </p>
+                        <div class="clips-list" id="clipsList"></div>
+                        <button class="add-clip-btn" onclick="document.getElementById('videoInput').click()">
+                            + Add More Videos
+                        </button>
+                    `;
+                    updateClipsList();
+                    break;
+                    
+                case 'crop':
+                    toolOptionsTitle.textContent = '📐 Crop & Resize';
+                    toolOptionsContent.innerHTML = `
+                        <p style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 15px;">
+                            Select aspect ratio:
+                        </p>
+                        <div class="tool-grid">
+                            <button class="tool-btn" onclick="setCrop('16:9')">16:9</button>
+                            <button class="tool-btn" onclick="setCrop('9:16')">9:16</button>
+                            <button class="tool-btn" onclick="setCrop('1:1')">1:1</button>
+                            <button class="tool-btn" onclick="setCrop('4:3')">4:3</button>
+                        </div>
+                    `;
+                    break;
+            }
+        }
+
+        // Tool functions
+        function setSpeed(speed) {
+            playbackSpeed = speed;
+            videoPlayer.playbackRate = speed;
+            if (document.getElementById('speedSlider')) {
+                document.getElementById('speedSlider').value = speed;
+                document.getElementById('speedValue').textContent = `${speed}x`;
+            }
+        }
+
+        function rotate(degrees) {
+            rotation = (rotation + degrees) % 360;
+            videoPlayer.style.transform = `rotate(${rotation}deg)`;
+            selectTool('rotate');
+        }
+
+        function flipHorizontal() {
+            videoPlayer.style.transform = `scaleX(-1) rotate(${rotation}deg)`;
+        }
+
+        function resetFilters() {
+            filters = { brightness: 0, contrast: 1, saturation: 1 };
+            videoPlayer.style.filter = '';
+            selectTool('filters');
+        }
+
+        function applyFiltersPreview() {
+            const brightness = 1 + filters.brightness;
+            videoPlayer.style.filter = `brightness(${brightness}) contrast(${filters.contrast}) saturate(${filters.saturation})`;
+        }
+
+        function addTextOverlay() {
+            const content = document.getElementById('textContent').value;
+            if (!content.trim()) return;
+            
+            textOverlays.push({
+                text: content,
+                color: document.getElementById('textColor').value,
+                size: parseInt(document.getElementById('textSize').value),
+                x: parseInt(document.getElementById('textX').value),
+                y: parseInt(document.getElementById('textY').value)
+            });
+            
+            document.getElementById('textContent').value = '';
+            updateTextOverlaysList();
+            drawOverlays();
+        }
+
+        function updateTextOverlaysList() {
+            const list = document.getElementById('textOverlaysList');
+            if (!list) return;
+            
+            list.innerHTML = textOverlays.map((overlay, i) => `
+                <div class="clip-item">
+                    <div class="clip-info">
+                        <div class="clip-name">${overlay.text}</div>
+                    </div>
+                    <button class="clip-remove" onclick="removeTextOverlay(${i})">×</button>
+                </div>
+            `).join('');
+        }
+
+        function removeTextOverlay(index) {
+            textOverlays.splice(index, 1);
+            updateTextOverlaysList();
+            drawOverlays();
+        }
+
+        function drawOverlays() {
+            const ctx = overlayCanvas.getContext('2d');
+            ctx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+            
+            textOverlays.forEach(overlay => {
+                const x = (overlay.x / 100) * overlayCanvas.width;
+                const y = (overlay.y / 100) * overlayCanvas.height;
+                
+                ctx.font = `bold ${overlay.size}px Inter, sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.fillStyle = 'rgba(0,0,0,0.5)';
+                ctx.fillText(overlay.text, x + 2, y + 2);
+                ctx.fillStyle = overlay.color;
+                ctx.fillText(overlay.text, x, y);
+            });
+        }
+
+        function updateClipsList() {
+            const list = document.getElementById('clipsList');
+            if (!list) return;
+            
+            const clips = videoFile ? [{ name: videoFile.name, file: videoFile }] : [];
+            videoClips.forEach(c => clips.push(c));
+            
+            list.innerHTML = clips.map((clip, i) => `
+                <div class="clip-item">
+                    <div class="clip-thumb">
+                        <video src="${URL.createObjectURL(clip.file)}" muted></video>
+                    </div>
+                    <div class="clip-info">
+                        <div class="clip-name">${clip.name}</div>
+                    </div>
+                    ${i > 0 ? `<button class="clip-remove" onclick="removeClip(${i})">×</button>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function removeClip(index) {
+            videoClips.splice(index - 1, 1);
+            updateClipsList();
+        }
+
+        audioInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                audioFile = e.target.files[0];
+                selectTool('audio');
+            }
+        });
+
+        // Export functionality
+        exportBtn.addEventListener('click', exportVideo);
+
+        async function exportVideo() {
+            if (!ffmpegLoaded) {
+                const loaded = await initFFmpeg();
+                if (!loaded) return; // Failed to load, error already shown
+            }
+            
+            if (!videoFile) return;
+            
+            const format = document.getElementById('formatSelect').value;
+            const quality = document.getElementById('qualitySelect').value;
+            
+            progressContainer.classList.add('active');
+            exportBtn.disabled = true;
+            progressFill.style.width = '0%';
+            progressText.textContent = 'Preparing...';
+            
+            try {
+                const { fetchFile } = FFmpegUtil;
+                
+                // Write input file
+                await ffmpeg.writeFile('input.mp4', await fetchFile(videoFile));
+                
+                // Build FFmpeg command
+                let filterComplex = [];
+                let outputArgs = [];
+                
+                // Calculate trim times
+                const startTime = trimStart * videoPlayer.duration;
+                const endTime = trimEnd * videoPlayer.duration;
+                const duration = endTime - startTime;
+                
+                // Input args
+                let inputArgs = ['-i', 'input.mp4'];
+                
+                // Trim
+                if (trimStart > 0 || trimEnd < 1) {
+                    inputArgs = ['-ss', startTime.toString(), '-t', duration.toString(), ...inputArgs];
+                }
+                
+                // Video filters
+                let vf = [];
+                
+                // Speed
+                if (playbackSpeed !== 1) {
+                    vf.push(`setpts=${1/playbackSpeed}*PTS`);
+                }
+                
+                // Rotation
+                if (rotation === 90) vf.push('transpose=1');
+                else if (rotation === -90 || rotation === 270) vf.push('transpose=2');
+                else if (rotation === 180) vf.push('transpose=1,transpose=1');
+                
+                // Filters (brightness, contrast, saturation)
+                if (filters.brightness !== 0 || filters.contrast !== 1 || filters.saturation !== 1) {
+                    const brightness = filters.brightness;
+                    const contrast = filters.contrast;
+                    const saturation = filters.saturation;
+                    vf.push(`eq=brightness=${brightness}:contrast=${contrast}:saturation=${saturation}`);
+                }
+                
+                // Scale
+                vf.push(`scale=-2:${quality}`);
+                
+                // Text overlays (using drawtext)
+                textOverlays.forEach(overlay => {
+                    const x = `(w*${overlay.x/100})`;
+                    const y = `(h*${overlay.y/100})`;
+                    const color = overlay.color.replace('#', '0x');
+                    vf.push(`drawtext=text='${overlay.text.replace(/'/g, "\\'")}':fontsize=${overlay.size}:fontcolor=${color}:x=${x}-text_w/2:y=${y}-text_h/2`);
+                });
+                
+                // Audio filters
+                let af = [];
+                if (playbackSpeed !== 1) {
+                    af.push(`atempo=${playbackSpeed}`);
+                }
+                
+                // Build final command
+                let cmd = [...inputArgs];
+                
+                if (vf.length > 0) {
+                    cmd.push('-vf', vf.join(','));
+                }
+                
+                if (af.length > 0) {
+                    cmd.push('-af', af.join(','));
+                }
+                
+                if (muteOriginalAudio) {
+                    cmd.push('-an');
+                }
+                
+                // Output format settings
+                if (format === 'mp4') {
+                    cmd.push('-c:v', 'libx264', '-preset', 'fast', '-crf', '23');
+                    if (!muteOriginalAudio) cmd.push('-c:a', 'aac');
+                    cmd.push('output.mp4');
+                } else if (format === 'webm') {
+                    cmd.push('-c:v', 'libvpx-vp9', '-crf', '30', '-b:v', '0');
+                    if (!muteOriginalAudio) cmd.push('-c:a', 'libopus');
+                    cmd.push('output.webm');
+                } else if (format === 'gif') {
+                    cmd.push('-vf', `${vf.join(',')},fps=10,scale=${quality}:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse`);
+                    cmd.push('output.gif');
+                }
+                
+                console.log('FFmpeg command:', cmd.join(' '));
+                progressText.textContent = 'Processing video...';
+                
+                await ffmpeg.exec(cmd);
+                
+                // Read output
+                const outputName = format === 'gif' ? 'output.gif' : format === 'webm' ? 'output.webm' : 'output.mp4';
+                const data = await ffmpeg.readFile(outputName);
+                
+                // Download
+                const mimeType = format === 'gif' ? 'image/gif' : format === 'webm' ? 'video/webm' : 'video/mp4';
+                const blob = new Blob([data.buffer], { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `edited_video.${format}`;
+                a.click();
+                
+                progressText.textContent = '✅ Export complete!';
+                setTimeout(() => {
+                    progressContainer.classList.remove('active');
+                    exportBtn.disabled = false;
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Export failed:', error);
+                progressText.textContent = `❌ Export failed: ${error.message}`;
+                exportBtn.disabled = false;
+            }
+        }
+
+        // Initialize - don't load FFmpeg on page load, wait for export
+        // FFmpeg will be loaded lazily when user clicks Export
+        console.log('Video Editor ready. FFmpeg will load when you export.');
+    </script>
+</body>
+</html>
