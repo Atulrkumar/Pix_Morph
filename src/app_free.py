@@ -16,10 +16,15 @@ import time
 import easyocr
 import numpy as np
 
-app = Flask(__name__)
+# Get the project root directory (parent of src/)
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+app = Flask(__name__, 
+            template_folder=os.path.join(PROJECT_ROOT, 'templates'),
+            static_folder=os.path.join(PROJECT_ROOT, 'static'))
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['GENERATED_FOLDER'] = 'generated'
+app.config['UPLOAD_FOLDER'] = os.path.join(PROJECT_ROOT, 'uploads')
+app.config['GENERATED_FOLDER'] = os.path.join(PROJECT_ROOT, 'generated')
 
 # Create folders if they don't exist
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -631,6 +636,333 @@ def download_file(filename):
         
         return jsonify({'error': 'File not found'}), 404
     except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+# ============================================================
+# AI FEATURES - Fal.ai Image Editing & Gemini Description
+# ============================================================
+
+@app.route('/api/ai-edit', methods=['POST'])
+def ai_edit_image():
+    """
+    AI Image Editing using Fal.ai (ChatGPT-like image editing)
+    Transforms image based on text prompt - FREE tier available
+    """
+    try:
+        data = request.json
+        image_data = data.get('image')  # Base64 image
+        prompt = data.get('prompt', '')
+        
+        if not image_data:
+            return jsonify({'error': 'Image required'}), 400
+        if not prompt:
+            return jsonify({'error': 'Prompt required'}), 400
+        
+        print(f"✨ AI Edit with prompt: {prompt}")
+        
+        # Decode base64
+        if ',' in image_data:
+            image_data = image_data.split(',')[1]
+        
+        image_bytes = base64.b64decode(image_data)
+        img = Image.open(io.BytesIO(image_bytes)).convert('RGB')
+        original_size = img.size
+        
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        
+        # Check for Fal.ai API key
+        FAL_KEY = os.environ.get('FAL_KEY', '')
+        
+        if FAL_KEY:
+            try:
+                import fal_client
+                
+                # Save temp image for Fal.ai
+                temp_path = os.path.join(app.config['UPLOAD_FOLDER'], f'temp_fal_{timestamp}.png')
+                img.save(temp_path)
+                
+                # Upload image to Fal.ai
+                with open(temp_path, 'rb') as f:
+                    image_url = fal_client.upload(f, "image/png")
+                
+                # Use FLUX Pro image-to-image model
+                result = fal_client.subscribe(
+                    "fal-ai/flux-pro/v1.1-ultra",
+                    arguments={
+                        "prompt": prompt,
+                        "image_url": image_url,
+                        "strength": 0.75,  # How much to change (0-1)
+                        "num_images": 1,
+                        "enable_safety_checker": True
+                    },
+                    with_logs=True
+                )
+                
+                # Download result image
+                if result and result.get('images'):
+                    result_url = result['images'][0]['url']
+                    response = requests.get(result_url, timeout=60)
+                    
+                    if response.status_code == 200:
+                        result_filename = f'ai_edited_{timestamp}.png'
+                        result_path = os.path.join(app.config['GENERATED_FOLDER'], result_filename)
+                        
+                        result_img = Image.open(io.BytesIO(response.content))
+                        result_img = result_img.resize(original_size, Image.LANCZOS)
+                        result_img.save(result_path)
+                        
+                        # Cleanup temp
+                        os.remove(temp_path)
+                        
+                        print(f"✅ AI Edit complete: {result_filename}")
+                        return jsonify({
+                            'success': True,
+                            'image_url': f'/api/download/{result_filename}',
+                            'filename': result_filename
+                        })
+                
+                os.remove(temp_path)
+                
+            except Exception as e:
+                print(f"⚠️ Fal.ai error: {e}")
+                # Continue to fallback
+        
+        # Fallback: Use Hugging Face Instruct-Pix2Pix (FREE - actually transforms the image!)
+        print("⚠️ Fal.ai not available, using Hugging Face Instruct-Pix2Pix...")
+        
+        HF_API_KEY = os.environ.get('HUGGING_FACE_API_KEY', '')
+        
+        if HF_API_KEY:
+            try:
+                # Resize image for API (max 512x512 for speed)
+                max_size = 512
+                img_resized = img.copy()
+                img_resized.thumbnail((max_size, max_size), Image.LANCZOS)
+                
+                # Convert to bytes
+                img_buffer = io.BytesIO()
+                img_resized.save(img_buffer, format='PNG')
+                img_buffer.seek(0)
+                
+                # Use Instruct-Pix2Pix - this model TRANSFORMS images based on instructions!
+                HF_PIX2PIX_URL = "https://api-inference.huggingface.co/models/timbrooks/instruct-pix2pix"
+                
+                headers = {"Authorization": f"Bearer {HF_API_KEY}"}
+                
+                # Send image + prompt to model
+                files = {'inputs': img_buffer}
+                params = {'parameters': {'prompt': prompt}}
+                
+                print(f"📤 Sending to Instruct-Pix2Pix: {prompt}")
+                
+                # Retry logic for model loading
+                max_retries = 3
+                for attempt in range(max_retries):
+                    response = requests.post(
+                        HF_PIX2PIX_URL,
+                        headers=headers,
+                        files={'inputs': ('image.png', img_buffer.getvalue(), 'image/png')},
+                        data={'prompt': prompt},
+                        timeout=120
+                    )
+                    
+                    if response.status_code == 503:
+                        wait_time = 20 * (attempt + 1)
+                        print(f"⏳ Model loading, waiting {wait_time}s... (attempt {attempt + 1}/{max_retries})")
+                        time.sleep(wait_time)
+                        continue
+                    break
+                
+                if response.status_code == 200:
+                    result_filename = f'ai_edited_{timestamp}.png'
+                    result_path = os.path.join(app.config['GENERATED_FOLDER'], result_filename)
+                    
+                    result_img = Image.open(io.BytesIO(response.content))
+                    result_img = result_img.resize(original_size, Image.LANCZOS)
+                    result_img.save(result_path)
+                    
+                    print(f"✅ AI Edit (Pix2Pix) complete: {result_filename}")
+                    return jsonify({
+                        'success': True,
+                        'image_url': f'/api/download/{result_filename}',
+                        'filename': result_filename
+                    })
+                else:
+                    print(f"⚠️ Pix2Pix API error: {response.status_code} - {response.text[:200]}")
+                    
+            except Exception as e:
+                print(f"⚠️ Pix2Pix error: {e}")
+        
+        # Final fallback: Replicate's Instruct-Pix2Pix (also free tier)
+        print("⚠️ Trying Replicate Instruct-Pix2Pix...")
+        
+        try:
+            REPLICATE_TOKEN = os.environ.get('REPLICATE_API_TOKEN', '')
+            if REPLICATE_TOKEN:
+                import replicate
+                
+                # Save temp image
+                temp_path = os.path.join(app.config['UPLOAD_FOLDER'], f'temp_rep_{timestamp}.png')
+                img.save(temp_path)
+                
+                with open(temp_path, 'rb') as f:
+                    output = replicate.run(
+                        "timbrooks/instruct-pix2pix:30c1d0b916a6f8efce20493f5d61ee27491ab2a60437c13c588468b9810ec23f",
+                        input={
+                            "image": f,
+                            "prompt": prompt,
+                            "num_inference_steps": 50,
+                            "image_guidance_scale": 1.5
+                        }
+                    )
+                
+                os.remove(temp_path)
+                
+                if output:
+                    result_url = output[0] if isinstance(output, list) else output
+                    response = requests.get(result_url, timeout=60)
+                    
+                    if response.status_code == 200:
+                        result_filename = f'ai_edited_{timestamp}.png'
+                        result_path = os.path.join(app.config['GENERATED_FOLDER'], result_filename)
+                        
+                        result_img = Image.open(io.BytesIO(response.content))
+                        result_img = result_img.resize(original_size, Image.LANCZOS)
+                        result_img.save(result_path)
+                        
+                        print(f"✅ AI Edit (Replicate) complete: {result_filename}")
+                        return jsonify({
+                            'success': True,
+                            'image_url': f'/api/download/{result_filename}',
+                            'filename': result_filename
+                        })
+        except Exception as e:
+            print(f"⚠️ Replicate error: {e}")
+        
+        # No API keys available
+        return jsonify({
+            'error': 'No AI editing service available. Please add one of: FAL_KEY, HUGGING_FACE_API_KEY, or REPLICATE_API_TOKEN to your .env file',
+            'help': 'Get free API keys at: fal.ai, huggingface.co, or replicate.com'
+        }), 400
+        
+        return jsonify({'error': 'AI edit failed - please try again'}), 500
+        
+    except Exception as e:
+        print(f"❌ AI Edit error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/describe', methods=['POST'])
+def describe_image():
+    """
+    AI Image Description using Gemini API (FREE)
+    Analyzes image and returns detailed description
+    """
+    try:
+        data = request.json
+        image_data = data.get('image')  # Base64 image
+        
+        if not image_data:
+            return jsonify({'error': 'Image required'}), 400
+        
+        print("🔍 Analyzing image with AI...")
+        
+        # Check for Gemini API key
+        GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+        
+        if GEMINI_API_KEY:
+            try:
+                import google.generativeai as genai
+                
+                genai.configure(api_key=GEMINI_API_KEY)
+                model = genai.GenerativeModel('gemini-1.5-flash')
+                
+                # Decode base64
+                if ',' in image_data:
+                    image_data = image_data.split(',')[1]
+                
+                image_bytes = base64.b64decode(image_data)
+                img = Image.open(io.BytesIO(image_bytes))
+                
+                # Generate description
+                response = model.generate_content([
+                    "Describe this image in detail. Include: 1) Main subject/objects, 2) Colors and lighting, 3) Background/setting, 4) Mood/atmosphere, 5) Any text visible. Be concise but thorough.",
+                    img
+                ])
+                
+                description = response.text
+                
+                # Also generate a short prompt for AI generation
+                prompt_response = model.generate_content([
+                    "Create a short, descriptive prompt (max 50 words) that could be used to generate a similar image with AI. Focus on key visual elements.",
+                    img
+                ])
+                
+                suggested_prompt = prompt_response.text
+                
+                print(f"✅ Image described successfully")
+                return jsonify({
+                    'success': True,
+                    'description': description,
+                    'suggested_prompt': suggested_prompt
+                })
+                
+            except Exception as e:
+                print(f"⚠️ Gemini error: {e}")
+        
+        # Fallback: Use Pollinations text API for description
+        try:
+            # Save image temporarily
+            if ',' in image_data:
+                image_data = image_data.split(',')[1]
+            
+            # Use basic OCR-based description as fallback
+            image_bytes = base64.b64decode(image_data)
+            img = Image.open(io.BytesIO(image_bytes))
+            
+            # Get basic info
+            width, height = img.size
+            mode = img.mode
+            
+            # Extract colors
+            img_small = img.resize((50, 50))
+            colors = img_small.getcolors(maxcolors=2500)
+            if colors:
+                colors = sorted(colors, key=lambda x: x[0], reverse=True)[:5]
+                dominant_colors = [f"RGB{c[1][:3] if len(c[1]) >= 3 else c[1]}" for c in colors]
+            else:
+                dominant_colors = ["Unable to extract"]
+            
+            # Try OCR for any text
+            try:
+                img_array = np.array(img)
+                ocr_results = reader.readtext(img_array)
+                detected_text = [r[1] for r in ocr_results] if ocr_results else []
+            except:
+                detected_text = []
+            
+            description = f"""Image Analysis:
+- Dimensions: {width}x{height} pixels
+- Color mode: {mode}
+- Dominant colors: {', '.join(dominant_colors[:3])}
+- Detected text: {', '.join(detected_text) if detected_text else 'None'}
+
+Note: For detailed AI description, add GEMINI_API_KEY to environment variables (free at aistudio.google.com)"""
+            
+            return jsonify({
+                'success': True,
+                'description': description,
+                'suggested_prompt': f"An image with dimensions {width}x{height}",
+                'note': 'Basic analysis. Add GEMINI_API_KEY for detailed AI descriptions.'
+            })
+            
+        except Exception as e:
+            print(f"⚠️ Fallback description error: {e}")
+            return jsonify({'error': 'Could not analyze image'}), 500
+        
+    except Exception as e:
+        print(f"❌ Describe error: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

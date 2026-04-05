@@ -3,11 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
-    <title>PixMoph ✨</title>
-=======
     <title>AI Image Text Editor ✨</title>
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -99,11 +95,7 @@
         .header {
             text-align: center;
             margin-bottom: 40px;
-<<<<<<< HEAD
-            padding: 32px 40px;
-=======
             padding: 80px 40px;
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
             background: rgba(255, 255, 255, 0.02);
             backdrop-filter: blur(30px);
             border-radius: 30px;
@@ -130,13 +122,8 @@
         }
 
         .emoji-float {
-<<<<<<< HEAD
-            font-size: 2.5rem;
-            margin-bottom: 8px;
-=======
             font-size: 4rem;
             margin-bottom: 20px;
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
             display: inline-block;
             animation: bounceFloat 3s ease-in-out infinite;
             filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.5));
@@ -150,23 +137,14 @@
 
         .header h1 {
             font-family: 'Space Grotesk', sans-serif;
-<<<<<<< HEAD
-            font-size: 2.5rem;
-=======
             font-size: 4.5rem;
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
             font-weight: 800;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 30%, #f093fb 60%, #4facfe 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-<<<<<<< HEAD
-            margin-bottom: 8px;
-            letter-spacing: -1.2px;
-=======
             margin-bottom: 20px;
             letter-spacing: -3px;
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
             line-height: 1.1;
             animation: gradientText 3s ease infinite;
             background-size: 200% 200%;
@@ -178,38 +156,22 @@
         }
 
         .header .subtitle {
-<<<<<<< HEAD
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.7);
-            font-weight: 300;
-            letter-spacing: 0.4px;
-            margin-bottom: 6px;
-=======
             font-size: 1.4rem;
             color: rgba(255, 255, 255, 0.7);
             font-weight: 300;
             letter-spacing: 1px;
             margin-bottom: 15px;
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
         }
 
         .free-badge {
             display: inline-block;
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
-<<<<<<< HEAD
-            padding: 6px 16px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.2px;
-=======
             padding: 8px 24px;
             border-radius: 50px;
             font-size: 0.85rem;
             font-weight: 600;
             letter-spacing: 0.5px;
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
             animation: pulse 2s ease-in-out infinite;
         }
@@ -222,9 +184,97 @@
         /* Main content area */
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 400px;
+            grid-template-columns: 1fr;
             gap: 30px;
             margin-bottom: 40px;
+            position: relative;
+        }
+        
+        /* Floating Edit Panel - appears on double-click */
+        .edit-panel {
+            position: fixed;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 320px;
+            background: rgba(20, 20, 30, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 25px;
+            z-index: 1000;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            display: none;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .edit-panel.visible {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-50%) translateX(-20px); }
+            to { opacity: 1; transform: translateY(-50%) translateX(0); }
+        }
+        
+        .edit-panel h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            color: white;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .edit-panel .close-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .edit-panel .close-btn:hover {
+            background: #e74c3c;
+        }
+        
+        .edit-panel label {
+            display: block;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            margin-top: 12px;
+        }
+        
+        .edit-panel input[type="text"],
+        .edit-panel select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .edit-panel input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+        }
+        
+        .edit-panel input[type="color"] {
+            width: 100%;
+            height: 45px;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
         }
 
         /* Upload area with modern design */
@@ -233,15 +283,8 @@
             backdrop-filter: blur(20px);
             border-radius: 24px;
             border: 2px dashed rgba(102, 126, 234, 0.3);
-<<<<<<< HEAD
-            padding: 20px 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-=======
             padding: 60px;
             text-align: center;
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
@@ -271,38 +314,18 @@
         }
 
         .upload-icon {
-<<<<<<< HEAD
-            font-size: 3rem;
-            margin-right: 20px;
-            animation: float 3s ease-in-out infinite;
-            position: relative;
-            z-index: 1;
-            flex-shrink: 0;
-        }
-
-        .upload-content {
-            flex-grow: 1;
-            text-align: left;
-=======
             font-size: 5rem;
             margin-bottom: 30px;
             animation: float 3s ease-in-out infinite;
             position: relative;
             z-index: 1;
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
         }
 
         .upload-section h2 {
             font-family: 'Space Grotesk', sans-serif;
-<<<<<<< HEAD
-            font-size: 1.5rem;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 5px;
-=======
             font-size: 2rem;
             color: rgba(255, 255, 255, 0.9);
             margin-bottom: 15px;
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
             font-weight: 700;
             position: relative;
             z-index: 1;
@@ -310,13 +333,8 @@
 
         .upload-section p {
             color: rgba(255, 255, 255, 0.6);
-<<<<<<< HEAD
-            font-size: 1rem;
-            margin-bottom: 0;
-=======
             font-size: 1.1rem;
             margin-bottom: 30px;
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
             position: relative;
             z-index: 1;
         }
@@ -325,10 +343,6 @@
             position: relative;
             display: inline-block;
             z-index: 1;
-<<<<<<< HEAD
-            flex-shrink: 0;
-=======
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
         }
 
         input[type="file"] {
@@ -337,26 +351,15 @@
 
         .custom-file-upload {
             display: inline-block;
-<<<<<<< HEAD
-            padding: 12px 30px;
-=======
             padding: 16px 40px;
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border-radius: 50px;
             cursor: pointer;
             font-weight: 600;
-<<<<<<< HEAD
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
-            white-space: nowrap;
-=======
             font-size: 1.1rem;
             transition: all 0.3s ease;
             box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
         }
 
         .custom-file-upload:hover {
@@ -398,22 +401,59 @@
         }
 
         /* Sidebar */
-        .sidebar {
+        /* Top toolbar for quick actions */
+        .toolbar {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(20px);
-            border-radius: 24px;
+            border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 30px;
-            max-height: 800px;
-            overflow-y: auto;
+            padding: 15px 25px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
         }
 
-        .sidebar h3 {
+        .toolbar h3 {
             font-family: 'Space Grotesk', sans-serif;
             color: rgba(255, 255, 255, 0.9);
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            font-weight: 700;
+            font-size: 1.1rem;
+            margin-right: auto;
+            font-weight: 600;
+        }
+        
+        .toolbar-btn {
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .toolbar-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+        
+        .toolbar-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .toolbar-btn.primary {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            border: none;
+        }
+        
+        .toolbar-btn.primary:hover {
+            box-shadow: 0 5px 20px rgba(17, 153, 142, 0.4);
         }
 
         .text-element {
@@ -688,6 +728,17 @@
             .header h1 {
                 font-size: 3rem;
             }
+            
+            .edit-panel {
+                position: fixed;
+                left: 10px;
+                right: 10px;
+                top: auto;
+                bottom: 10px;
+                transform: none;
+                width: auto;
+                max-height: 50vh;
+            }
         }
 
         @media (max-width: 768px) {
@@ -697,6 +748,15 @@
             
             .variations-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .toolbar h3 {
+                margin-bottom: 10px;
             }
         }
     </style>
@@ -719,14 +779,9 @@
         <!-- Header -->
         <div class="header">
             <div class="emoji-float">✨🎨🤖</div>
-<<<<<<< HEAD
-            <h1>PixMorph</h1>
-            <p class="subtitle">Transform your images with intelligent text editing & AI-powered variations</p>
-=======
             <h1>AI Image Text Editor</h1>
             <p class="subtitle">Transform your images with intelligent text editing & AI-powered variations</p>
             <div class="free-badge">100% FREE • No Credit Card Required</div>
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
         </div>
 
         <!-- Main content -->
@@ -735,15 +790,8 @@
             <div>
                 <div class="upload-section" id="uploadZone">
                     <div class="upload-icon">📤</div>
-<<<<<<< HEAD
-                    <div class="upload-content">
-                        <h2>Upload Your Image</h2>
-                        <p>Drag & drop or click to browse</p>
-                    </div>
-=======
                     <h2>Upload Your Image</h2>
                     <p>Drag & drop or click to browse</p>
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
                     <div class="file-input-wrapper">
                         <label for="imageFile" class="custom-file-upload">
                             Choose Image
@@ -765,89 +813,249 @@
                     <p style="color: rgba(255,255,255,0.4); margin-top: 20px;">Your image preview will appear here</p>
                 </div>
             </div>
-
-            <!-- Right: Sidebar -->
-            <div class="sidebar">
-<<<<<<< HEAD
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h3 style="margin: 0;">✏️ Text Elements</h3>
-                    <div style="display: flex; gap: 8px;">
-                        <button id="undoBtn" onclick="undo()" disabled style="
-                            padding: 8px 12px;
-                            background: linear-gradient(135deg, #667eea, #764ba2);
-                            color: white;
-                            border: none;
-                            border-radius: 8px;
-                            font-size: 0.85rem;
-                            font-weight: 600;
-                            cursor: pointer;
-                            transition: all 0.3s;
-                            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
-                        " onmouseover="if(!this.disabled) {this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(102, 126, 234, 0.5)'}"
-                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(102, 126, 234, 0.3)'">
-                            ↶ Undo
-                        </button>
-                        <button id="redoBtn" onclick="redo()" disabled style="
-                            padding: 8px 12px;
-                            background: linear-gradient(135deg, #667eea, #764ba2);
-                            color: white;
-                            border: none;
-                            border-radius: 8px;
-                            font-size: 0.85rem;
-                            font-weight: 600;
-                            cursor: pointer;
-                            transition: all 0.3s;
-                            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
-                        " onmouseover="if(!this.disabled) {this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(102, 126, 234, 0.5)'}"
-                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(102, 126, 234, 0.3)'">
-                            ↷ Redo
-                        </button>
-                        <button onclick="clearAllTexts()" style="
-                            padding: 8px 16px;
-                            background: linear-gradient(135deg, #e74c3c, #c0392b);
-                            color: white;
-                            border: none;
-                            border-radius: 8px;
-                            font-size: 0.85rem;
-                            font-weight: 600;
-                            cursor: pointer;
-                            transition: all 0.3s;
-                            box-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
-                        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(231, 76, 60, 0.5)'"
-                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(231, 76, 60, 0.3)'">
-                            🗑️ Clear All
-                        </button>
-                    </div>
-                </div>
-=======
-                <h3>✏️ Text Elements</h3>
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
+            
+            <!-- Toolbar (replaces sidebar) -->
+            <div class="toolbar" id="toolbar">
+                <h3>✏️ Editor</h3>
+                <button id="undoBtn" onclick="undo()" disabled class="toolbar-btn">↩️ Undo</button>
+                <button id="redoBtn" onclick="redo()" disabled class="toolbar-btn">↪️ Redo</button>
+                <button onclick="addNewText()" class="toolbar-btn primary">➕ Add Text</button>
                 
-                <!-- Add New Text Button -->
-                <button onclick="addNewText()" style="
-                    width: 100%;
-                    padding: 14px;
-                    background: linear-gradient(135deg, #11998e, #38ef7d);
-                    color: white;
-                    border: none;
-                    border-radius: 12px;
-                    font-size: 1rem;
-                    font-weight: 600;
-                    cursor: pointer;
-                    margin-bottom: 20px;
-                    transition: all 0.3s;
-                    box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
-                " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(17, 153, 142, 0.5)'"
-                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(17, 153, 142, 0.3)'">
-                    ➕ Add New Text
+                <div style="width: 1px; height: 30px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+                
+                <!-- AI Features -->
+                <button onclick="openAIEditModal()" id="aiEditBtn" class="toolbar-btn" style="background: linear-gradient(135deg, #667eea, #764ba2);" title="Edit image with AI prompt (like ChatGPT!)">
+                    ✨ AI Edit
+                </button>
+                <button onclick="describeImage()" id="describeBtn" class="toolbar-btn" title="AI describes your image">
+                    🔍 Describe
                 </button>
                 
-                <div id="textElements">
-                    <p style="color: rgba(255,255,255,0.5); text-align: center; padding: 40px 20px;">
-                        Upload an image to start editing text
-                    </p>
+                <span style="color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-left: auto;">
+                    💡 Double-click text to edit
+                </span>
+            </div>
+        </div>
+        
+        <!-- AI Edit Modal (Fal.ai - ChatGPT-like editing) -->
+        <div id="aiEditModal" style="
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        ">
+            <div style="
+                background: rgba(25, 25, 40, 0.98);
+                border-radius: 24px;
+                padding: 35px;
+                max-width: 550px;
+                width: 90%;
+                border: 1px solid rgba(255,255,255,0.1);
+                box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+            ">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h3 style="color: white; margin: 0; font-size: 1.4rem;">✨ AI Image Edit</h3>
+                    <button onclick="closeAIEditModal()" style="
+                        background: rgba(255,255,255,0.1);
+                        border: none;
+                        color: white;
+                        width: 38px;
+                        height: 38px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        font-size: 1.3rem;
+                        transition: all 0.3s;
+                    " onmouseover="this.style.background='#e74c3c'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">✕</button>
+                </div>
+                
+                <p style="color: rgba(255,255,255,0.7); margin-bottom: 20px; line-height: 1.5;">
+                    Describe what you want to change - just like ChatGPT! The AI will edit your image while keeping its style.
+                </p>
+                
+                <label style="color: rgba(255,255,255,0.8); font-size: 0.9rem; display: block; margin-bottom: 8px;">
+                    What do you want to change?
+                </label>
+                <textarea id="aiEditPrompt" placeholder="Examples:
+• Change the background to a beach sunset
+• Make the person wear sunglasses
+• Turn this into anime style
+• Add snow falling in the scene
+• Make it look like a painting" style="
+                    width: 100%;
+                    height: 120px;
+                    padding: 15px;
+                    background: rgba(255,255,255,0.08);
+                    border: 1px solid rgba(255,255,255,0.2);
+                    border-radius: 12px;
+                    color: white;
+                    font-size: 1rem;
+                    resize: none;
+                    margin-bottom: 20px;
+                "></textarea>
+                
+                <!-- Quick prompts -->
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 25px;">
+                    <button onclick="setAIPrompt('Change background to beach sunset')" class="prompt-tag" style="padding: 8px 14px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; cursor: pointer; font-size: 0.85rem;">🏖️ Beach</button>
+                    <button onclick="setAIPrompt('Turn into anime/cartoon style')" class="prompt-tag" style="padding: 8px 14px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; cursor: pointer; font-size: 0.85rem;">🎨 Anime</button>
+                    <button onclick="setAIPrompt('Make it look like a painting')" class="prompt-tag" style="padding: 8px 14px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; cursor: pointer; font-size: 0.85rem;">🖼️ Painting</button>
+                    <button onclick="setAIPrompt('Add dramatic lighting and shadows')" class="prompt-tag" style="padding: 8px 14px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; cursor: pointer; font-size: 0.85rem;">💡 Dramatic</button>
+                    <button onclick="setAIPrompt('Make it nighttime with stars')" class="prompt-tag" style="padding: 8px 14px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; cursor: pointer; font-size: 0.85rem;">🌙 Night</button>
+                </div>
+                
+                <button onclick="applyAIEdit()" id="applyAIEditBtn" style="
+                    width: 100%;
+                    padding: 16px;
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                    color: white;
+                    border: none;
+                    border-radius: 14px;
+                    font-size: 1.1rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                    transition: all 0.4s;
+                    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+                " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 35px rgba(102, 126, 234, 0.5)'"
+                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px rgba(102, 126, 234, 0.4)'">
+                    ✨ Transform Image
+                </button>
+                
+                <p style="color: rgba(255,255,255,0.4); font-size: 0.8rem; text-align: center; margin-top: 15px;">
+                    Powered by Fal.ai FLUX Pro • Takes 10-30 seconds
+                </p>
+            </div>
+        </div>
+        
+        <!-- AI Description Modal -->
+        <div id="descriptionModal" style="
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        ">
+            <div style="
+                background: rgba(30, 30, 45, 0.98);
+                border-radius: 20px;
+                padding: 30px;
+                max-width: 600px;
+                width: 90%;
+                max-height: 80vh;
+                overflow-y: auto;
+                border: 1px solid rgba(255,255,255,0.1);
+            ">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="color: white; margin: 0;">🔍 AI Image Description</h3>
+                    <button onclick="closeDescriptionModal()" style="
+                        background: rgba(255,255,255,0.1);
+                        border: none;
+                        color: white;
+                        width: 35px;
+                        height: 35px;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        font-size: 1.2rem;
+                    ">✕</button>
+                </div>
+                
+                <div id="descriptionContent" style="color: rgba(255,255,255,0.9); line-height: 1.6; margin-bottom: 20px;">
+                    Loading...
+                </div>
+                
+                <div id="suggestedPromptSection" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <label style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">💡 Suggested prompt for variations:</label>
+                    <div style="
+                        background: rgba(102, 126, 234, 0.2);
+                        padding: 15px;
+                        border-radius: 10px;
+                        margin-top: 10px;
+                        color: white;
+                    " id="suggestedPromptText"></div>
+                    <button onclick="useAsPrompt()" style="
+                        margin-top: 15px;
+                        padding: 12px 25px;
+                        background: linear-gradient(135deg, #667eea, #764ba2);
+                        color: white;
+                        border: none;
+                        border-radius: 10px;
+                        cursor: pointer;
+                        font-weight: 600;
+                    ">📋 Use This Prompt</button>
                 </div>
             </div>
+        </div>
+        
+        <!-- Floating Edit Panel (appears on double-click) -->
+        <div class="edit-panel" id="editPanel">
+            <h3>
+                <span>✏️ Edit Text</span>
+                <button class="close-btn" onclick="closeEditPanel()">✕</button>
+            </h3>
+            
+            <label>Text Content</label>
+            <input type="text" id="editText" onchange="updateSelectedText(this.value)">
+            
+            <label>🔤 Font Family</label>
+            <select id="editFont" onchange="updateSelectedFont(this.value)">
+                <option value="Arial">Arial</option>
+                <option value="Impact">Impact</option>
+                <option value="Helvetica">Helvetica</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Comic Sans MS">Comic Sans MS</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Verdana">Verdana</option>
+                <option value="Trebuchet MS">Trebuchet MS</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Palatino">Palatino</option>
+                <option value="Arial Black">Arial Black</option>
+                <option value="Lucida Console">Lucida Console</option>
+            </select>
+            
+            <label>📏 Font Size: <span id="editSizeValue">48px</span></label>
+            <input type="range" id="editSize" min="12" max="200" value="48" oninput="updateSelectedSize(this.value)">
+            
+            <label>✨ Text Style</label>
+            <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                <button id="btnBold" onclick="toggleSelectedBold()" class="toolbar-btn" style="flex:1; padding: 10px;">B</button>
+                <button id="btnItalic" onclick="toggleSelectedItalic()" class="toolbar-btn" style="flex:1; padding: 10px; font-style: italic;">I</button>
+                <button id="btnUnderline" onclick="toggleSelectedUnderline()" class="toolbar-btn" style="flex:1; padding: 10px; text-decoration: underline;">U</button>
+            </div>
+            
+            <label>📐 Alignment</label>
+            <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                <button id="btnAlignLeft" onclick="updateSelectedAlign('left')" class="toolbar-btn" style="flex:1; padding: 10px;">◀</button>
+                <button id="btnAlignCenter" onclick="updateSelectedAlign('center')" class="toolbar-btn" style="flex:1; padding: 10px;">⬤</button>
+                <button id="btnAlignRight" onclick="updateSelectedAlign('right')" class="toolbar-btn" style="flex:1; padding: 10px;">▶</button>
+            </div>
+            
+            <label>🎨 Color</label>
+            <input type="color" id="editColor" value="#ffffff" onchange="updateSelectedColor(this.value)">
+            
+            <label>👁️ Opacity: <span id="editOpacityValue">100%</span></label>
+            <input type="range" id="editOpacity" min="10" max="100" value="100" oninput="updateSelectedOpacity(this.value)">
+            
+            <button onclick="deleteSelectedText()" style="
+                width: 100%;
+                margin-top: 20px;
+                padding: 12px;
+                background: linear-gradient(135deg, #e74c3c, #c0392b);
+                color: white;
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: all 0.3s;
+            ">🗑️ Delete Text</button>
         </div>
 
         <!-- Style section -->
@@ -963,14 +1171,6 @@
         let detectedTexts = [];
         let currentImagePath = null;
         
-<<<<<<< HEAD
-        // Undo/Redo history
-        let historyStack = [];
-        let historyIndex = -1;
-        const MAX_HISTORY = 50;
-        
-=======
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
         // Canvas variables
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -980,6 +1180,18 @@
         let dragStartX = 0;
         let dragStartY = 0;
         let canvasScale = 1; // Track scaling factor for coordinate conversion
+        
+        // Undo/Redo history
+        let historyStack = [];
+        let redoStack = [];
+        const MAX_HISTORY = 50;
+        
+        // Available fonts
+        const availableFonts = [
+            'Arial', 'Impact', 'Helvetica', 'Times New Roman', 'Comic Sans MS',
+            'Georgia', 'Verdana', 'Trebuchet MS', 'Courier New', 'Palatino',
+            'Garamond', 'Bookman', 'Tahoma', 'Arial Black', 'Lucida Console'
+        ];
 
         // File upload handling
         document.getElementById('imageFile').addEventListener('change', handleFileUpload);
@@ -1049,22 +1261,8 @@
                             text.position.x = Math.round(text.position.x * scale);
                             text.position.y = Math.round(text.position.y * scale);
                             text.size = Math.round(text.size * scale);
-<<<<<<< HEAD
-                            // Initialize rotation if not present
-                            if (text.rotation === undefined) {
-                                text.rotation = 0;
-                            }
                         });
                         
-                        // Initialize history with the loaded state
-                        historyStack = [JSON.parse(JSON.stringify(detectedTexts))];
-                        historyIndex = 0;
-                        updateUndoRedoButtons();
-                        
-=======
-                        });
-                        
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
                         // Draw canvas
                         drawCanvas();
                         
@@ -1085,312 +1283,257 @@
         }
 
         function displayTextElements(texts) {
-            const container = document.getElementById('textElements');
-            container.innerHTML = '';
-            
-            if (texts.length === 0) {
-                container.innerHTML = '<p style="color: rgba(255,255,255,0.5); text-align: center; padding: 40px 20px;">No text elements. Click "Add New Text" to start!</p>';
-                return;
+            // No longer need to display individual panels
+            // Just update the edit panel if it's open
+            if (selectedTextIndex !== null && selectedTextIndex < texts.length) {
+                updateEditPanel();
             }
+        }
+        
+        // Open edit panel on double-click
+        function openEditPanel(index) {
+            selectedTextIndex = index;
+            const panel = document.getElementById('editPanel');
+            panel.classList.add('visible');
+            updateEditPanel();
+            drawCanvas();
+        }
+        
+        // Close edit panel
+        function closeEditPanel() {
+            const panel = document.getElementById('editPanel');
+            panel.classList.remove('visible');
+        }
+        
+        // Update edit panel with current text properties
+        function updateEditPanel() {
+            if (selectedTextIndex === null || selectedTextIndex >= detectedTexts.length) return;
             
-            texts.forEach((text, index) => {
-                const element = document.createElement('div');
-                element.className = 'text-element';
-                
-                // Highlight selected text element
-                if (selectedTextIndex === index) {
-                    element.style.border = '2px solid #667eea';
-                    element.style.background = 'rgba(102, 126, 234, 0.1)';
-                }
-                
-                // Mark placeholder text with different style
-                const isPlaceholder = text.isPlaceholder || false;
-                
-                element.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <label>Text ${index + 1} ${selectedTextIndex === index ? '✨ (Selected)' : ''} ${isPlaceholder ? '📝 (Placeholder)' : ''}</label>
-                        <button onclick="deleteText(${index})" style="
-                            background: #e74c3c;
-                            color: white;
-                            border: none;
-                            border-radius: 6px;
-                            padding: 6px 12px;
-                            cursor: pointer;
-                            font-size: 0.9rem;
-                            transition: all 0.3s;
-                        " onmouseover="this.style.background='#c0392b'"
-                           onmouseout="this.style.background='#e74c3c'">
-                            🗑️ Delete
-                        </button>
-                    </div>
-<<<<<<< HEAD
-                    <label>Text Content</label>
-                    <textarea 
-                        onchange="updateText(${index}, this.value)" 
-                        onkeyup="updateText(${index}, this.value)"
-                        style="
-                            margin-bottom: 10px; 
-                            min-height: 80px; 
-                            resize: vertical;
-                            font-family: monospace;
-                        "
-                        placeholder="Type your text here (press Enter for new line)"
-                    >${text.text}</textarea>
-                    
-                    <label style="margin-top: 10px;">Font Family</label>
-                    <select onchange="updateFont(${index}, this.value)" style="
-                        width: 100%;
-                        background: rgba(0, 0, 0, 0.3);
-                        border: 1px solid rgba(255, 255, 255, 0.1);
-                        border-radius: 10px;
-                        padding: 12px 16px;
-                        color: white;
-                        font-size: 1rem;
-                        margin-bottom: 10px;
-                        cursor: pointer;
-                    ">
-                        <optgroup label="MEME FONTS" style="font-weight: bold; background: rgba(102, 126, 234, 0.2);">
-                            <option value="Impact" ${text.font === 'Impact' ? 'selected' : ''}>Impact (Classic Meme)</option>
-                            <option value="Arial Black" ${text.font === 'Arial Black' ? 'selected' : ''}>Arial Black (Bold)</option>
-                            <option value="Comic Sans MS" ${text.font === 'Comic Sans MS' ? 'selected' : ''}>Comic Sans MS (Fun)</option>
-                        </optgroup>
-                        <optgroup label="SANS SERIF" style="font-weight: bold;">
-                            <option value="Arial" ${text.font === 'Arial' ? 'selected' : ''}>Arial</option>
-                            <option value="Helvetica" ${text.font === 'Helvetica' ? 'selected' : ''}>Helvetica</option>
-                            <option value="Verdana" ${text.font === 'Verdana' ? 'selected' : ''}>Verdana</option>
-                            <option value="Trebuchet MS" ${text.font === 'Trebuchet MS' ? 'selected' : ''}>Trebuchet MS</option>
-                            <option value="Tahoma" ${text.font === 'Tahoma' ? 'selected' : ''}>Tahoma</option>
-                            <option value="Calibri" ${text.font === 'Calibri' ? 'selected' : ''}>Calibri</option>
-                            <option value="Segoe UI" ${text.font === 'Segoe UI' ? 'selected' : ''}>Segoe UI</option>
-                        </optgroup>
-                        <optgroup label="SERIF" style="font-weight: bold;">
-                            <option value="Times New Roman" ${text.font === 'Times New Roman' ? 'selected' : ''}>Times New Roman</option>
-                            <option value="Georgia" ${text.font === 'Georgia' ? 'selected' : ''}>Georgia</option>
-                            <option value="Palatino" ${text.font === 'Palatino' ? 'selected' : ''}>Palatino</option>
-                            <option value="Book Antiqua" ${text.font === 'Book Antiqua' ? 'selected' : ''}>Book Antiqua</option>
-                            <option value="Garamond" ${text.font === 'Garamond' ? 'selected' : ''}>Garamond</option>
-                        </optgroup>
-                        <optgroup label="MONOSPACE" style="font-weight: bold;">
-                            <option value="Courier New" ${text.font === 'Courier New' ? 'selected' : ''}>Courier New</option>
-                            <option value="Consolas" ${text.font === 'Consolas' ? 'selected' : ''}>Consolas</option>
-                            <option value="Monaco" ${text.font === 'Monaco' ? 'selected' : ''}>Monaco</option>
-                            <option value="Lucida Console" ${text.font === 'Lucida Console' ? 'selected' : ''}>Lucida Console</option>
-                        </optgroup>
-                        <optgroup label="DECORATIVE" style="font-weight: bold;">
-                            <option value="Brush Script MT" ${text.font === 'Brush Script MT' ? 'selected' : ''}>Brush Script MT</option>
-                            <option value="Papyrus" ${text.font === 'Papyrus' ? 'selected' : ''}>Papyrus</option>
-                            <option value="Copperplate" ${text.font === 'Copperplate' ? 'selected' : ''}>Copperplate</option>
-                            <option value="Luminari" ${text.font === 'Luminari' ? 'selected' : ''}>Luminari</option>
-                        </optgroup>
-                    </select>
-                    
-                    <label style="margin-top: 10px;">Font Size: <span id="fontSize${index}" style="color: #667eea; font-weight: 700;">${text.size}px</span></label>
-                    
-                    <!-- Quick size buttons -->
-                    <div style="display: flex; gap: 5px; margin-bottom: 8px; flex-wrap: wrap;">
-                        <button onclick="setFontSize(${index}, 24)" style="flex: 1; padding: 6px; background: rgba(102, 126, 234, 0.2); color: white; border: 1px solid rgba(102, 126, 234, 0.3); border-radius: 6px; cursor: pointer; font-size: 0.8rem;">Small</button>
-                        <button onclick="setFontSize(${index}, 48)" style="flex: 1; padding: 6px; background: rgba(102, 126, 234, 0.2); color: white; border: 1px solid rgba(102, 126, 234, 0.3); border-radius: 6px; cursor: pointer; font-size: 0.8rem;">Medium</button>
-                        <button onclick="setFontSize(${index}, 72)" style="flex: 1; padding: 6px; background: rgba(102, 126, 234, 0.2); color: white; border: 1px solid rgba(102, 126, 234, 0.3); border-radius: 6px; cursor: pointer; font-size: 0.8rem;">Large</button>
-                        <button onclick="setFontSize(${index}, 120)" style="flex: 1; padding: 6px; background: rgba(102, 126, 234, 0.2); color: white; border: 1px solid rgba(102, 126, 234, 0.3); border-radius: 6px; cursor: pointer; font-size: 0.8rem;">Huge</button>
-                    </div>
-                    
-                    <input type="range" min="12" max="200" value="${text.size}" 
-                           id="sizeSlider${index}"
-                           oninput="updateFontSize(${index}, this.value)"
-                           style="
-                               width: 100%; 
-                               height: 8px;
-                               cursor: pointer; 
-                               margin-bottom: 15px;
-                               background: rgba(102, 126, 234, 0.2);
-                               border-radius: 10px;
-                               outline: none;
-                               -webkit-appearance: none;
-                           ">
-                    <style>
-                        input[type='range']::-webkit-slider-thumb {
-                            -webkit-appearance: none;
-                            appearance: none;
-                            width: 20px;
-                            height: 20px;
-                            border-radius: 50%;
-                            background: linear-gradient(135deg, #667eea, #764ba2);
-                            cursor: pointer;
-                            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
-                        }
-                        input[type='range']::-moz-range-thumb {
-                            width: 20px;
-                            height: 20px;
-                            border-radius: 50%;
-                            background: linear-gradient(135deg, #667eea, #764ba2);
-                            cursor: pointer;
-                            border: none;
-                            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
-                        }
-                        input[type='range']:hover::-webkit-slider-thumb {
-                            box-shadow: 0 0 15px rgba(102, 126, 234, 0.8);
-                        }
-                        input[type='range']:hover::-moz-range-thumb {
-                            box-shadow: 0 0 15px rgba(102, 126, 234, 0.8);
-                        }
-                    </style>
-=======
-                    <input type="text" value="${text.text}" onchange="updateText(${index}, this.value)" style="margin-bottom: 10px;">
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
-                    
-                    <label style="margin-top: 10px;">Color</label>
-                    <input type="color" value="${text.color}" onchange="updateColor(${index}, this.value)" 
-                           style="height: 40px; cursor: pointer;">
-                    
-<<<<<<< HEAD
-                    <label style="margin-top: 10px;">Rotation: <span id="rotation${index}" style="color: #667eea; font-weight: 700;">${text.rotation || 0}°</span></label>
-                    
-                    <!-- Quick rotation buttons -->
-                    <div style="display: flex; gap: 5px; margin-bottom: 8px; flex-wrap: wrap;">
-                        <button onclick="setRotation(${index}, 0)" style="flex: 1; padding: 6px; background: rgba(102, 126, 234, 0.2); color: white; border: 1px solid rgba(102, 126, 234, 0.3); border-radius: 6px; cursor: pointer; font-size: 0.8rem;">0°</button>
-                        <button onclick="setRotation(${index}, 45)" style="flex: 1; padding: 6px; background: rgba(102, 126, 234, 0.2); color: white; border: 1px solid rgba(102, 126, 234, 0.3); border-radius: 6px; cursor: pointer; font-size: 0.8rem;">45°</button>
-                        <button onclick="setRotation(${index}, 90)" style="flex: 1; padding: 6px; background: rgba(102, 126, 234, 0.2); color: white; border: 1px solid rgba(102, 126, 234, 0.3); border-radius: 6px; cursor: pointer; font-size: 0.8rem;">90°</button>
-                        <button onclick="setRotation(${index}, -45)" style="flex: 1; padding: 6px; background: rgba(102, 126, 234, 0.2); color: white; border: 1px solid rgba(102, 126, 234, 0.3); border-radius: 6px; cursor: pointer; font-size: 0.8rem;">-45°</button>
-                    </div>
-                    
-                    <input type="range" min="-180" max="180" value="${text.rotation || 0}" 
-                           id="rotationSlider${index}"
-                           oninput="updateRotation(${index}, this.value)"
-                           style="
-                               width: 100%; 
-                               height: 8px;
-                               cursor: pointer; 
-                               margin-bottom: 15px;
-                               background: rgba(102, 126, 234, 0.2);
-                               border-radius: 10px;
-                               outline: none;
-                               -webkit-appearance: none;
-                           ">
-                    
-=======
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
-                    <div style="margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 12px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                            <span>📍 Position X:</span>
-                            <span><strong>${Math.round(text.position.x)}px</strong></span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-<<<<<<< HEAD
-                            <span>� Position Y:</span>
-                            <span><strong>${Math.round(text.position.y)}px</strong></span>
-                        </div>
-=======
-                            <span>📍 Position Y:</span>
-                            <span><strong>${Math.round(text.position.y)}px</strong></span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between;">
-                            <span>📏 Font Size:</span>
-                            <span><strong>${text.size}px</strong></span>
-                        </div>
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
-                        <div style="margin-top: 8px; font-size: 11px; opacity: 0.7; text-align: center;">
-                            💡 Click and drag text on the canvas to move it
-                        </div>
-                    </div>
-                `;
-                container.appendChild(element);
+            const text = detectedTexts[selectedTextIndex];
+            
+            // Ensure defaults
+            text.italic = text.italic || false;
+            text.underline = text.underline || false;
+            text.align = text.align || 'center';
+            text.opacity = text.opacity !== undefined ? text.opacity : 1;
+            
+            document.getElementById('editText').value = text.text;
+            document.getElementById('editFont').value = text.font;
+            document.getElementById('editSize').value = text.size;
+            document.getElementById('editSizeValue').textContent = text.size + 'px';
+            document.getElementById('editColor').value = text.color;
+            document.getElementById('editOpacity').value = Math.round(text.opacity * 100);
+            document.getElementById('editOpacityValue').textContent = Math.round(text.opacity * 100) + '%';
+            
+            // Update style button states
+            updateStyleButtons(text);
+        }
+        
+        function updateStyleButtons(text) {
+            const boldBtn = document.getElementById('btnBold');
+            const italicBtn = document.getElementById('btnItalic');
+            const underlineBtn = document.getElementById('btnUnderline');
+            
+            boldBtn.style.background = text.weight === 'bold' ? 'linear-gradient(135deg, #667eea, #764ba2)' : 'rgba(255,255,255,0.1)';
+            italicBtn.style.background = text.italic ? 'linear-gradient(135deg, #667eea, #764ba2)' : 'rgba(255,255,255,0.1)';
+            underlineBtn.style.background = text.underline ? 'linear-gradient(135deg, #667eea, #764ba2)' : 'rgba(255,255,255,0.1)';
+            
+            // Update alignment buttons
+            ['left', 'center', 'right'].forEach(align => {
+                const btn = document.getElementById('btnAlign' + align.charAt(0).toUpperCase() + align.slice(1));
+                btn.style.background = text.align === align ? 'linear-gradient(135deg, #667eea, #764ba2)' : 'rgba(255,255,255,0.1)';
             });
+        }
+        
+        // Edit panel update functions
+        function updateSelectedText(value) {
+            if (selectedTextIndex === null) return;
+            saveHistory();
+            detectedTexts[selectedTextIndex].text = value;
+            drawCanvas();
+        }
+        
+        function updateSelectedFont(value) {
+            if (selectedTextIndex === null) return;
+            saveHistory();
+            detectedTexts[selectedTextIndex].font = value;
+            drawCanvas();
+        }
+        
+        function updateSelectedSize(value) {
+            if (selectedTextIndex === null) return;
+            saveHistory();
+            detectedTexts[selectedTextIndex].size = parseInt(value);
+            document.getElementById('editSizeValue').textContent = value + 'px';
+            drawCanvas();
+        }
+        
+        function updateSelectedColor(value) {
+            if (selectedTextIndex === null) return;
+            saveHistory();
+            detectedTexts[selectedTextIndex].color = value;
+            drawCanvas();
+        }
+        
+        function updateSelectedOpacity(value) {
+            if (selectedTextIndex === null) return;
+            saveHistory();
+            detectedTexts[selectedTextIndex].opacity = parseInt(value) / 100;
+            document.getElementById('editOpacityValue').textContent = value + '%';
+            drawCanvas();
+        }
+        
+        function toggleSelectedBold() {
+            if (selectedTextIndex === null) return;
+            saveHistory();
+            detectedTexts[selectedTextIndex].weight = detectedTexts[selectedTextIndex].weight === 'bold' ? 'normal' : 'bold';
+            updateEditPanel();
+            drawCanvas();
+        }
+        
+        function toggleSelectedItalic() {
+            if (selectedTextIndex === null) return;
+            saveHistory();
+            detectedTexts[selectedTextIndex].italic = !detectedTexts[selectedTextIndex].italic;
+            updateEditPanel();
+            drawCanvas();
+        }
+        
+        function toggleSelectedUnderline() {
+            if (selectedTextIndex === null) return;
+            saveHistory();
+            detectedTexts[selectedTextIndex].underline = !detectedTexts[selectedTextIndex].underline;
+            updateEditPanel();
+            drawCanvas();
+        }
+        
+        function updateSelectedAlign(value) {
+            if (selectedTextIndex === null) return;
+            saveHistory();
+            detectedTexts[selectedTextIndex].align = value;
+            updateEditPanel();
+            drawCanvas();
+        }
+        
+        function deleteSelectedText() {
+            if (selectedTextIndex === null) return;
+            if (confirm(`Delete "${detectedTexts[selectedTextIndex].text}"?`)) {
+                saveHistory();
+                detectedTexts.splice(selectedTextIndex, 1);
+                closeEditPanel();
+                selectedTextIndex = null;
+                drawCanvas();
+                updateUndoRedoButtons();
+            }
         }
 
         function updateText(index, value) {
+            saveHistory();
             detectedTexts[index].text = value;
-<<<<<<< HEAD
-            saveHistory(); // Save to undo stack
-=======
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
-            drawCanvas(); // Redraw canvas with new text
+            drawCanvas();
         }
 
         function updateColor(index, value) {
+            saveHistory();
             detectedTexts[index].color = value;
-<<<<<<< HEAD
-            saveHistory(); // Save to undo stack
-            drawCanvas(); // Redraw canvas with new color
+            drawCanvas();
         }
-
+        
         function updateFont(index, value) {
+            saveHistory();
             detectedTexts[index].font = value;
-            saveHistory(); // Save to undo stack
-            drawCanvas(); // Redraw canvas with new font
-            console.log(`Updated font to ${value} for text ${index + 1}`);
+            drawCanvas();
         }
-
-        function updateFontSize(index, value) {
-            const size = parseInt(value);
-            detectedTexts[index].size = size;
-            
-            // Update the display
-            const fontSizeLabel = document.getElementById('fontSize' + index);
-            if (fontSizeLabel) {
-                fontSizeLabel.textContent = size + 'px';
-            }
-            
-            saveHistory(); // Save to undo stack
-            drawCanvas(); // Redraw canvas with new size
-            console.log(`Updated font size to ${size}px for text ${index + 1}`);
+        
+        function updateSize(index, value) {
+            saveHistory();
+            detectedTexts[index].size = parseInt(value);
+            document.getElementById('sizeValue' + index).textContent = value + 'px';
+            drawCanvas();
         }
-
-        function setFontSize(index, size) {
-            detectedTexts[index].size = size;
-            
-            // Update both the label and slider
-            const fontSizeLabel = document.getElementById('fontSize' + index);
-            const slider = document.getElementById('sizeSlider' + index);
-            
-            if (fontSizeLabel) {
-                fontSizeLabel.textContent = size + 'px';
-            }
-            if (slider) {
-                slider.value = size;
-            }
-            
-            saveHistory(); // Save to undo stack
-            drawCanvas(); // Redraw canvas
-            console.log(`Set font size to ${size}px for text ${index + 1}`);
+        
+        function toggleBold(index) {
+            saveHistory();
+            detectedTexts[index].weight = detectedTexts[index].weight === 'bold' ? 'normal' : 'bold';
+            drawCanvas();
+            displayTextElements(detectedTexts);
         }
-
-        function updateRotation(index, value) {
-            const angle = parseInt(value);
-            detectedTexts[index].rotation = angle;
-            
-            // Update the display
-            const rotationLabel = document.getElementById('rotation' + index);
-            if (rotationLabel) {
-                rotationLabel.textContent = angle + '°';
-            }
-            
-            saveHistory(); // Save to undo stack
-            drawCanvas(); // Redraw canvas with new rotation
-            console.log(`Updated rotation to ${angle}° for text ${index + 1}`);
+        
+        function toggleItalic(index) {
+            saveHistory();
+            detectedTexts[index].italic = !detectedTexts[index].italic;
+            drawCanvas();
+            displayTextElements(detectedTexts);
         }
-
-        function setRotation(index, angle) {
-            detectedTexts[index].rotation = angle;
-            
-            // Update both the label and slider
-            const rotationLabel = document.getElementById('rotation' + index);
-            const slider = document.getElementById('rotationSlider' + index);
-            
-            if (rotationLabel) {
-                rotationLabel.textContent = angle + '°';
-            }
-            if (slider) {
-                slider.value = angle;
-            }
-            
-            saveHistory(); // Save to undo stack
-            drawCanvas(); // Redraw canvas
-            console.log(`Set rotation to ${angle}° for text ${index + 1}`);
+        
+        function toggleUnderline(index) {
+            saveHistory();
+            detectedTexts[index].underline = !detectedTexts[index].underline;
+            drawCanvas();
+            displayTextElements(detectedTexts);
         }
-=======
-            drawCanvas(); // Redraw canvas with new color
+        
+        function updateAlign(index, value) {
+            saveHistory();
+            detectedTexts[index].align = value;
+            drawCanvas();
+            displayTextElements(detectedTexts);
         }
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
+        
+        function updateOpacity(index, value) {
+            saveHistory();
+            detectedTexts[index].opacity = parseInt(value) / 100;
+            document.getElementById('opacityValue' + index).textContent = value + '%';
+            drawCanvas();
+        }
+        
+        // History functions for Undo/Redo
+        function saveHistory() {
+            // Deep clone the current state
+            const state = JSON.parse(JSON.stringify(detectedTexts));
+            historyStack.push(state);
+            if (historyStack.length > MAX_HISTORY) {
+                historyStack.shift();
+            }
+            // Clear redo stack when new action is performed
+            redoStack = [];
+            updateUndoRedoButtons();
+        }
+        
+        function undo() {
+            if (historyStack.length === 0) return;
+            
+            // Save current state to redo stack
+            const currentState = JSON.parse(JSON.stringify(detectedTexts));
+            redoStack.push(currentState);
+            
+            // Restore previous state
+            detectedTexts = historyStack.pop();
+            drawCanvas();
+            displayTextElements(detectedTexts);
+            updateUndoRedoButtons();
+        }
+        
+        function redo() {
+            if (redoStack.length === 0) return;
+            
+            // Save current state to history
+            const currentState = JSON.parse(JSON.stringify(detectedTexts));
+            historyStack.push(currentState);
+            
+            // Restore redo state
+            detectedTexts = redoStack.pop();
+            drawCanvas();
+            displayTextElements(detectedTexts);
+            updateUndoRedoButtons();
+        }
+        
+        function updateUndoRedoButtons() {
+            const undoBtn = document.getElementById('undoBtn');
+            const redoBtn = document.getElementById('redoBtn');
+            if (undoBtn) undoBtn.disabled = historyStack.length === 0;
+            if (redoBtn) redoBtn.disabled = redoStack.length === 0;
+        }
         
         // Add new text element
         function addNewText() {
@@ -1398,6 +1541,8 @@
                 alert('Please upload an image first!');
                 return;
             }
+            
+            saveHistory(); // Save state before adding
             
             const newText = {
                 id: detectedTexts.length + 1,
@@ -1410,133 +1555,28 @@
                 size: 48,
                 color: '#ffffff',
                 weight: 'bold',
-<<<<<<< HEAD
-                rotation: 0,
-=======
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
+                italic: false,
+                underline: false,
+                align: 'center',
+                opacity: 1,
                 isPlaceholder: false
             };
             
             detectedTexts.push(newText);
             selectedTextIndex = detectedTexts.length - 1; // Auto-select new text
             
-<<<<<<< HEAD
-            saveHistory(); // Save to undo stack
-=======
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
             drawCanvas();
             displayTextElements(detectedTexts);
+            updateUndoRedoButtons();
             
             console.log('Added new text element:', newText);
         }
         
         // Delete text element
         function deleteText(index) {
-<<<<<<< HEAD
-            // Remove confirmation dialog - just delete directly
-            detectedTexts.splice(index, 1);
-            
-            // Adjust selected index
-            if (selectedTextIndex >= detectedTexts.length) {
-                selectedTextIndex = detectedTexts.length - 1;
-            }
-            if (detectedTexts.length === 0) {
-                selectedTextIndex = null;
-            }
-            
-            saveHistory(); // Save to undo stack
-            drawCanvas();
-            displayTextElements(detectedTexts);
-            
-            console.log(`Deleted text element at index ${index}`);
-        }
-
-        // Clear all text elements
-        function clearAllTexts() {
-            detectedTexts = [];
-            selectedTextIndex = null;
-            saveHistory(); // Save to undo stack
-            drawCanvas();
-            displayTextElements(detectedTexts);
-            console.log('Cleared all text elements');
-        }
-
-        // Undo/Redo functionality
-        function saveHistory() {
-            // Remove any future history if we're not at the end
-            if (historyIndex < historyStack.length - 1) {
-                historyStack = historyStack.slice(0, historyIndex + 1);
-            }
-            
-            // Save current state
-            historyStack.push(JSON.parse(JSON.stringify(detectedTexts)));
-            
-            // Limit history size
-            if (historyStack.length > MAX_HISTORY) {
-                historyStack.shift();
-            } else {
-                historyIndex++;
-            }
-            
-            updateUndoRedoButtons();
-        }
-
-        function undo() {
-            if (historyIndex > 0) {
-                historyIndex--;
-                detectedTexts = JSON.parse(JSON.stringify(historyStack[historyIndex]));
-                drawCanvas();
-                displayTextElements(detectedTexts);
-                updateUndoRedoButtons();
-                console.log('Undo - Step back to history index:', historyIndex);
-            }
-        }
-
-        function redo() {
-            if (historyIndex < historyStack.length - 1) {
-                historyIndex++;
-                detectedTexts = JSON.parse(JSON.stringify(historyStack[historyIndex]));
-                drawCanvas();
-                displayTextElements(detectedTexts);
-                updateUndoRedoButtons();
-                console.log('Redo - Step forward to history index:', historyIndex);
-            }
-        }
-
-        function updateUndoRedoButtons() {
-            const undoBtn = document.getElementById('undoBtn');
-            const redoBtn = document.getElementById('redoBtn');
-            
-            if (undoBtn) {
-                undoBtn.disabled = historyIndex <= 0;
-                undoBtn.style.opacity = historyIndex <= 0 ? '0.5' : '1';
-                undoBtn.style.cursor = historyIndex <= 0 ? 'not-allowed' : 'pointer';
-            }
-            
-            if (redoBtn) {
-                redoBtn.disabled = historyIndex >= historyStack.length - 1;
-                redoBtn.style.opacity = historyIndex >= historyStack.length - 1 ? '0.5' : '1';
-                redoBtn.style.cursor = historyIndex >= historyStack.length - 1 ? 'not-allowed' : 'pointer';
-            }
-        }
-
-        // Keyboard shortcuts for undo/redo
-        document.addEventListener('keydown', (e) => {
-            // Ctrl+Z or Cmd+Z for undo
-            if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
-                e.preventDefault();
-                undo();
-            }
-            // Ctrl+Shift+Z or Cmd+Shift+Z or Ctrl+Y for redo
-            if (((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'z') || 
-                (e.ctrlKey && e.key === 'y')) {
-                e.preventDefault();
-                redo();
-            }
-        });
-
-=======
             if (confirm(`Delete "${detectedTexts[index].text}"?`)) {
+                saveHistory(); // Save state before deleting
+                
                 detectedTexts.splice(index, 1);
                 
                 // Adjust selected index
@@ -1549,12 +1589,12 @@
                 
                 drawCanvas();
                 displayTextElements(detectedTexts);
+                updateUndoRedoButtons();
                 
                 console.log(`Deleted text element at index ${index}`);
             }
         }
 
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
         function updatePosition(index, axis, value) {
             if (axis === 'x') {
                 detectedTexts[index].position.x = parseInt(value);
@@ -1566,15 +1606,12 @@
             drawCanvas(); // Auto-update preview
         }
 
-<<<<<<< HEAD
-=======
         function updateFontSize(index, value) {
             detectedTexts[index].size = parseInt(value);
             document.getElementById('fontSize' + index).textContent = value;
             drawCanvas(); // Auto-update preview
         }
 
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
         async function updatePreview() {
             if (!uploadedImage || !currentImagePath) {
                 alert('Please upload an image first!');
@@ -1708,10 +1745,6 @@
                     size: 48,
                     color: '#ffffff',
                     weight: 'bold',
-<<<<<<< HEAD
-                    rotation: 0,
-=======
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
                     isPlaceholder: false
                 });
                 
@@ -1726,10 +1759,6 @@
                     size: 48,
                     color: '#ffffff',
                     weight: 'bold',
-<<<<<<< HEAD
-                    rotation: 0,
-=======
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
                     isPlaceholder: false
                 });
             } else {
@@ -1745,18 +1774,10 @@
                     size: 56,
                     color: '#ffffff',
                     weight: 'bold',
-<<<<<<< HEAD
-                    rotation: 0,
-=======
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
                     isPlaceholder: false
                 });
             }
             
-<<<<<<< HEAD
-            saveHistory(); // Save meme caption to undo stack
-=======
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
             drawCanvas();
             displayTextElements(detectedTexts);
             
@@ -1866,233 +1887,457 @@
             
             // Draw all text elements
             detectedTexts.forEach((textElem, index) => {
-<<<<<<< HEAD
-                // Save canvas state before rotation
-                ctx.save();
-                
-                // Apply rotation if set
-                const rotation = textElem.rotation || 0;
-                if (rotation !== 0) {
-                    // Translate to text position, rotate, then translate back
-                    ctx.translate(textElem.position.x, textElem.position.y);
-                    ctx.rotate(rotation * Math.PI / 180); // Convert degrees to radians
-                    ctx.translate(-textElem.position.x, -textElem.position.y);
-                }
-                
-=======
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
-                ctx.font = `${textElem.weight} ${textElem.size}px ${textElem.font}`;
-                ctx.textAlign = 'center';
+                // Build font string with italic support
+                const italicStr = textElem.italic ? 'italic ' : '';
+                const weightStr = textElem.weight || 'normal';
+                ctx.font = `${italicStr}${weightStr} ${textElem.size}px ${textElem.font}`;
+                ctx.textAlign = textElem.align || 'center';
                 ctx.textBaseline = 'middle';
                 
-<<<<<<< HEAD
-                // Split text by newlines for multi-line support
-                const lines = textElem.text.split('\n');
-                const lineHeight = textElem.size * 1.2; // 120% of font size for line spacing
+                // Set opacity
+                const opacity = textElem.opacity !== undefined ? textElem.opacity : 1;
+                ctx.globalAlpha = opacity;
                 
-                // Calculate total text block height
-                const totalHeight = lines.length * lineHeight;
-                
-                // Starting Y position (centered vertically around textElem.position.y)
-                const startY = textElem.position.y - (totalHeight / 2) + (lineHeight / 2);
-                
-                // MEME-STYLE TEXT: White text with black stroke
-=======
                 // MEME-STYLE TEXT: White text with black stroke
                 // Draw black stroke (outline)
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
                 ctx.strokeStyle = '#000000';
                 ctx.lineWidth = Math.max(3, textElem.size / 15); // Adaptive stroke width
                 ctx.lineJoin = 'round';
                 ctx.miterLimit = 2;
-<<<<<<< HEAD
-                ctx.fillStyle = textElem.color;
-                
-                // Draw each line
-                lines.forEach((line, lineIndex) => {
-                    const yPos = startY + (lineIndex * lineHeight);
-                    
-                    // Draw black stroke (outline)
-                    ctx.strokeText(line, textElem.position.x, yPos);
-                    
-                    // Draw white fill on top
-                    ctx.fillText(line, textElem.position.x, yPos);
-                });
-                
-                console.log(`Text ${index + 1}: "${textElem.text.substring(0, 20)}${textElem.text.length > 20 ? '...' : ''}" (${lines.length} lines) at (${textElem.position.x}, ${textElem.position.y}) rotation:${rotation}° size:${textElem.size}px color:${textElem.color}`);
-                
-                // Restore canvas state after rotation
-                ctx.restore();
-                
-                // Highlight selected text with ACCURATE bounding box (drawn without rotation for clarity)
-                if (selectedTextIndex === index) {
-                    // Calculate bounding box for all lines
-                    let maxWidth = 0;
-                    lines.forEach(line => {
-                        const metrics = ctx.measureText(line);
-                        maxWidth = Math.max(maxWidth, metrics.width);
-                    });
-                    
-                    // Get accurate text metrics from first line (for ascent/descent)
-                    const metrics = ctx.measureText(lines[0] || 'M');
-                    const ascent = metrics.actualBoundingBoxAscent || textElem.size * 0.8;
-                    const descent = metrics.actualBoundingBoxDescent || textElem.size * 0.2;
-                    
-                    // Since textAlign='center' and textBaseline='middle':
-                    // - X: text is centered at position.x, so box starts at x - width/2
-                    // - Y: text block is centered around position.y
-                    const boxX = textElem.position.x - maxWidth / 2;
-                    const boxY = startY - ascent;
-                    const boxWidth = maxWidth;
-                    const boxHeight = totalHeight + descent;
-                    
-                    // Draw bounding box with small padding
-                    const padding = 5;
-                    ctx.strokeStyle = '#667eea';
-                    ctx.lineWidth = 3;
-                    ctx.strokeRect(
-                        boxX - padding,
-                        boxY - padding,
-                        boxWidth + padding * 2,
-                        boxHeight + padding * 2
-                    );
-                    
-                    // Optional: Draw baseline indicator for debugging
-                    // ctx.strokeStyle = '#ff0000';
-                    // ctx.lineWidth = 1;
-                    // ctx.beginPath();
-                    // ctx.moveTo(boxX, textElem.position.y);
-                    // ctx.lineTo(boxX + boxWidth, textElem.position.y);
-                    // ctx.stroke();
-=======
                 ctx.strokeText(textElem.text, textElem.position.x, textElem.position.y);
                 
-                // Draw white fill on top
+                // Draw fill on top
                 ctx.fillStyle = textElem.color;
                 ctx.fillText(textElem.text, textElem.position.x, textElem.position.y);
                 
+                // Draw underline if enabled
+                if (textElem.underline) {
+                    const metrics = ctx.measureText(textElem.text);
+                    let startX = textElem.position.x;
+                    
+                    // Adjust startX based on text alignment
+                    if (textElem.align === 'center') {
+                        startX = textElem.position.x - metrics.width / 2;
+                    } else if (textElem.align === 'right') {
+                        startX = textElem.position.x - metrics.width;
+                    }
+                    
+                    ctx.beginPath();
+                    ctx.strokeStyle = textElem.color;
+                    ctx.lineWidth = Math.max(2, textElem.size / 20);
+                    ctx.moveTo(startX, textElem.position.y + textElem.size / 3);
+                    ctx.lineTo(startX + metrics.width, textElem.position.y + textElem.size / 3);
+                    ctx.stroke();
+                }
+                
+                // Reset opacity for other elements
+                ctx.globalAlpha = 1;
+                
                 console.log(`Text ${index + 1}: "${textElem.text}" at (${textElem.position.x}, ${textElem.position.y}) size:${textElem.size}px color:${textElem.color}`);
                 
-                // Highlight selected text
+                // Highlight selected text with resize handles
                 if (selectedTextIndex === index) {
-                    ctx.strokeStyle = '#667eea';
-                    ctx.lineWidth = 3;
                     const metrics = ctx.measureText(textElem.text);
-                    ctx.strokeRect(
-                        textElem.position.x - 5, 
-                        textElem.position.y - textElem.size - 5, 
-                        metrics.width + 10, 
-                        textElem.size + 10
-                    );
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
+                    let rectX = textElem.position.x;
+                    
+                    // Adjust rectangle position based on alignment
+                    if (textElem.align === 'center') {
+                        rectX = textElem.position.x - metrics.width / 2;
+                    } else if (textElem.align === 'right') {
+                        rectX = textElem.position.x - metrics.width;
+                    }
+                    
+                    const rectY = textElem.position.y - textElem.size / 2;
+                    const rectW = metrics.width;
+                    const rectH = textElem.size;
+                    
+                    // Draw selection border
+                    ctx.strokeStyle = '#667eea';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([5, 5]);
+                    ctx.strokeRect(rectX - 5, rectY - 5, rectW + 10, rectH + 10);
+                    ctx.setLineDash([]);
+                    
+                    // Draw resize handles (corners)
+                    const handleSize = 10;
+                    ctx.fillStyle = '#667eea';
+                    
+                    // Top-left
+                    ctx.fillRect(rectX - 5 - handleSize/2, rectY - 5 - handleSize/2, handleSize, handleSize);
+                    // Top-right
+                    ctx.fillRect(rectX + rectW + 5 - handleSize/2, rectY - 5 - handleSize/2, handleSize, handleSize);
+                    // Bottom-left
+                    ctx.fillRect(rectX - 5 - handleSize/2, rectY + rectH + 5 - handleSize/2, handleSize, handleSize);
+                    // Bottom-right
+                    ctx.fillRect(rectX + rectW + 5 - handleSize/2, rectY + rectH + 5 - handleSize/2, handleSize, handleSize);
+                    
+                    // White inner squares
+                    ctx.fillStyle = '#ffffff';
+                    const innerSize = 6;
+                    ctx.fillRect(rectX - 5 - innerSize/2, rectY - 5 - innerSize/2, innerSize, innerSize);
+                    ctx.fillRect(rectX + rectW + 5 - innerSize/2, rectY - 5 - innerSize/2, innerSize, innerSize);
+                    ctx.fillRect(rectX - 5 - innerSize/2, rectY + rectH + 5 - innerSize/2, innerSize, innerSize);
+                    ctx.fillRect(rectX + rectW + 5 - innerSize/2, rectY + rectH + 5 - innerSize/2, innerSize, innerSize);
                 }
             });
         }
 
         // Mouse event handlers for drag-and-drop
+        // Resize handle detection
+        let isResizing = false;
+        let resizeCorner = null;
+        const HANDLE_SIZE = 12;
+        
+        function getTextBounds(text) {
+            const italicStr = text.italic ? 'italic ' : '';
+            const weightStr = text.weight || 'normal';
+            ctx.font = `${italicStr}${weightStr} ${text.size}px ${text.font}`;
+            const metrics = ctx.measureText(text.text);
+            
+            let x = text.position.x;
+            if (text.align === 'center') {
+                x = text.position.x - metrics.width / 2;
+            } else if (text.align === 'right') {
+                x = text.position.x - metrics.width;
+            }
+            
+            return {
+                x: x,
+                y: text.position.y - text.size / 2,
+                width: metrics.width,
+                height: text.size
+            };
+        }
+        
+        function getResizeHandle(x, y, bounds) {
+            const handles = [
+                { corner: 'nw', x: bounds.x - HANDLE_SIZE/2, y: bounds.y - HANDLE_SIZE/2 },
+                { corner: 'ne', x: bounds.x + bounds.width - HANDLE_SIZE/2, y: bounds.y - HANDLE_SIZE/2 },
+                { corner: 'sw', x: bounds.x - HANDLE_SIZE/2, y: bounds.y + bounds.height - HANDLE_SIZE/2 },
+                { corner: 'se', x: bounds.x + bounds.width - HANDLE_SIZE/2, y: bounds.y + bounds.height - HANDLE_SIZE/2 }
+            ];
+            
+            for (let handle of handles) {
+                if (x >= handle.x && x <= handle.x + HANDLE_SIZE &&
+                    y >= handle.y && y <= handle.y + HANDLE_SIZE) {
+                    return handle.corner;
+                }
+            }
+            return null;
+        }
+        
         canvas.addEventListener('mousedown', (e) => {
             const rect = canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             
+            // Check if clicking resize handle on selected text
+            if (selectedTextIndex !== null) {
+                const bounds = getTextBounds(detectedTexts[selectedTextIndex]);
+                const handle = getResizeHandle(x, y, bounds);
+                if (handle) {
+                    saveHistory();
+                    isResizing = true;
+                    resizeCorner = handle;
+                    return;
+                }
+            }
+            
             // Check if click is on any text (reverse order for top-to-bottom selection)
             for (let i = detectedTexts.length - 1; i >= 0; i--) {
                 const text = detectedTexts[i];
-                ctx.font = `${text.weight} ${text.size}px ${text.font}`;
-<<<<<<< HEAD
-                
-                // Split text by newlines for multi-line support
-                const lines = text.text.split('\n');
-                const lineHeight = text.size * 1.2;
-                const totalHeight = lines.length * lineHeight;
-                
-                // Calculate bounding box for all lines
-                let maxWidth = 0;
-                lines.forEach(line => {
-                    const metrics = ctx.measureText(line);
-                    maxWidth = Math.max(maxWidth, metrics.width);
-                });
-                
-                // Get accurate text metrics
-                const metrics = ctx.measureText(lines[0] || 'M');
-                const ascent = metrics.actualBoundingBoxAscent || text.size * 0.8;
-                const descent = metrics.actualBoundingBoxDescent || text.size * 0.2;
-                
-                // Starting Y position (centered vertically around text.position.y)
-                const startY = text.position.y - (totalHeight / 2) + (lineHeight / 2);
-                
-                // Box coordinates (accounting for center alignment and middle baseline)
-                const boxX = text.position.x - maxWidth / 2;
-                const boxY = startY - ascent;
-                const boxWidth = maxWidth;
-                const boxHeight = totalHeight + descent;
-                
-                const padding = 5;
-                
-                // Hit detection using accurate bounding box
-                if (x >= boxX - padding && 
-                    x <= boxX + boxWidth + padding &&
-                    y >= boxY - padding && 
-                    y <= boxY + boxHeight + padding) {
-=======
-                const metrics = ctx.measureText(text.text);
+                const bounds = getTextBounds(text);
                 
                 // Hit detection
-                if (x >= text.position.x - 5 && 
-                    x <= text.position.x + metrics.width + 5 &&
-                    y >= text.position.y - text.size - 5 && 
-                    y <= text.position.y + 5) {
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
+                if (x >= bounds.x - 5 && 
+                    x <= bounds.x + bounds.width + 5 &&
+                    y >= bounds.y - 5 && 
+                    y <= bounds.y + bounds.height + 5) {
+                    saveHistory();
                     selectedTextIndex = i;
                     isDragging = true;
                     dragStartX = x - text.position.x;
                     dragStartY = y - text.position.y;
                     drawCanvas();
-                    displayTextElements(detectedTexts); // Update sidebar
                     return;
                 }
             }
             
-            // Click on empty space - deselect
+            // Click on empty space - deselect and close panel
             selectedTextIndex = null;
+            closeEditPanel();
             drawCanvas();
         });
-
-        canvas.addEventListener('mousemove', (e) => {
-            if (isDragging && selectedTextIndex !== null) {
-                const rect = canvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
+        
+        // Double-click to open edit panel
+        canvas.addEventListener('dblclick', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            for (let i = detectedTexts.length - 1; i >= 0; i--) {
+                const bounds = getTextBounds(detectedTexts[i]);
                 
-                // Update text position
-                detectedTexts[selectedTextIndex].position.x = x - dragStartX;
-                detectedTexts[selectedTextIndex].position.y = y - dragStartY;
-                
-                // Redraw canvas
-                drawCanvas();
+                if (x >= bounds.x - 5 && 
+                    x <= bounds.x + bounds.width + 5 &&
+                    y >= bounds.y - 5 && 
+                    y <= bounds.y + bounds.height + 5) {
+                    openEditPanel(i);
+                    return;
+                }
             }
         });
 
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Handle resizing
+            if (isResizing && selectedTextIndex !== null) {
+                const text = detectedTexts[selectedTextIndex];
+                const bounds = getTextBounds(text);
+                
+                // Calculate new size based on drag distance from center
+                let newSize;
+                if (resizeCorner === 'se' || resizeCorner === 'ne') {
+                    newSize = Math.max(12, Math.min(200, Math.abs(y - text.position.y) * 2));
+                } else {
+                    newSize = Math.max(12, Math.min(200, Math.abs(y - text.position.y) * 2));
+                }
+                
+                text.size = Math.round(newSize);
+                drawCanvas();
+                
+                // Update edit panel if open
+                if (document.getElementById('editPanel').classList.contains('visible')) {
+                    document.getElementById('editSize').value = text.size;
+                    document.getElementById('editSizeValue').textContent = text.size + 'px';
+                }
+                return;
+            }
+            
+            // Handle dragging
+            if (isDragging && selectedTextIndex !== null) {
+                detectedTexts[selectedTextIndex].position.x = x - dragStartX;
+                detectedTexts[selectedTextIndex].position.y = y - dragStartY;
+                drawCanvas();
+                return;
+            }
+            
+            // Update cursor based on hover
+            if (selectedTextIndex !== null) {
+                const bounds = getTextBounds(detectedTexts[selectedTextIndex]);
+                const handle = getResizeHandle(x, y, bounds);
+                if (handle) {
+                    canvas.style.cursor = handle === 'nw' || handle === 'se' ? 'nwse-resize' : 'nesw-resize';
+                    return;
+                }
+            }
+            
+            // Check if hovering over any text
+            for (let i = detectedTexts.length - 1; i >= 0; i--) {
+                const bounds = getTextBounds(detectedTexts[i]);
+                if (x >= bounds.x - 5 && x <= bounds.x + bounds.width + 5 &&
+                    y >= bounds.y - 5 && y <= bounds.y + bounds.height + 5) {
+                    canvas.style.cursor = 'move';
+                    return;
+                }
+            }
+            canvas.style.cursor = 'default';
+        });
+
         canvas.addEventListener('mouseup', () => {
-            if (isDragging) {
+            if (isDragging || isResizing) {
                 isDragging = false;
-<<<<<<< HEAD
-                saveHistory(); // Save position change to undo stack
-=======
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
-                // Update sidebar to show new position
-                displayTextElements(detectedTexts);
+                isResizing = false;
+                resizeCorner = null;
             }
         });
 
         // Stop dragging if mouse leaves canvas
         canvas.addEventListener('mouseleave', () => {
-            if (isDragging) {
-                isDragging = false;
-<<<<<<< HEAD
-                saveHistory(); // Save position change to undo stack
-=======
->>>>>>> 9428b8edd7f0e37f58957adbc01ddaed1a8188f9
+            isDragging = false;
+            isResizing = false;
+            resizeCorner = null;
+        });
+        
+        // ============================================================
+        // AI FEATURES - Fal.ai Image Editing & Gemini Description
+        // ============================================================
+        
+        // AI Edit Modal Functions
+        function openAIEditModal() {
+            if (!backgroundImage) {
+                alert('Please upload an image first!');
+                return;
+            }
+            document.getElementById('aiEditModal').style.display = 'flex';
+            document.getElementById('aiEditPrompt').focus();
+        }
+        
+        function closeAIEditModal() {
+            document.getElementById('aiEditModal').style.display = 'none';
+            document.getElementById('aiEditPrompt').value = '';
+        }
+        
+        function setAIPrompt(prompt) {
+            document.getElementById('aiEditPrompt').value = prompt;
+        }
+        
+        async function applyAIEdit() {
+            const prompt = document.getElementById('aiEditPrompt').value.trim();
+            if (!prompt) {
+                alert('Please describe what you want to change');
+                return;
+            }
+            
+            const btn = document.getElementById('applyAIEditBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner" style="margin: 0 auto; width: 24px; height: 24px;"></div> Transforming...';
+            
+            try {
+                const imageData = canvas.toDataURL('image/png');
+                
+                const response = await fetch('/api/ai-edit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        image: imageData,
+                        prompt: prompt
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const newImg = new Image();
+                    newImg.onload = () => {
+                        backgroundImage = newImg;
+                        canvas.width = newImg.width;
+                        canvas.height = newImg.height;
+                        drawCanvas();
+                        closeAIEditModal();
+                        
+                        // Show success message
+                        alert('✨ Image transformed successfully!');
+                    };
+                    newImg.onerror = () => {
+                        alert('Error loading transformed image');
+                    };
+                    newImg.src = result.image_url + '?t=' + Date.now();
+                } else {
+                    alert('Error: ' + (result.error || 'AI edit failed'));
+                }
+            } catch (error) {
+                console.error('AI Edit error:', error);
+                alert('Error: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '✨ Transform Image';
+            }
+        }
+        
+        // Close AI Edit modal when clicking outside
+        document.getElementById('aiEditModal').addEventListener('click', (e) => {
+            if (e.target.id === 'aiEditModal') {
+                closeAIEditModal();
+            }
+        });
+        
+        // Image Description (Gemini)
+        async function describeImage() {
+            if (!backgroundImage) {
+                alert('Please upload an image first!');
+                return;
+            }
+            
+            const modal = document.getElementById('descriptionModal');
+            const content = document.getElementById('descriptionContent');
+            const promptSection = document.getElementById('suggestedPromptSection');
+            
+            modal.style.display = 'flex';
+            content.innerHTML = '<div style="text-align: center;"><div class="spinner" style="margin: 20px auto;"></div><p>🔍 AI is analyzing your image...</p></div>';
+            promptSection.style.display = 'none';
+            
+            try {
+                const imageData = canvas.toDataURL('image/png');
+                
+                const response = await fetch('/api/describe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image: imageData })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    content.innerHTML = result.description.replace(/\n/g, '<br>');
+                    
+                    if (result.suggested_prompt) {
+                        promptSection.style.display = 'block';
+                        document.getElementById('suggestedPromptText').textContent = result.suggested_prompt;
+                    }
+                    
+                    if (result.note) {
+                        content.innerHTML += `<p style="margin-top: 15px; padding: 10px; background: rgba(255,193,7,0.2); border-radius: 8px; font-size: 0.85rem;">⚠️ ${result.note}</p>`;
+                    }
+                } else {
+                    content.innerHTML = `<p style="color: #e74c3c;">❌ Error: ${result.error || 'Could not describe image'}</p>`;
+                }
+            } catch (error) {
+                console.error('Describe error:', error);
+                content.innerHTML = `<p style="color: #e74c3c;">❌ Error: ${error.message}</p>`;
+            }
+        }
+        
+        function closeDescriptionModal() {
+            document.getElementById('descriptionModal').style.display = 'none';
+        }
+        
+        function useAsPrompt() {
+            const prompt = document.getElementById('suggestedPromptText').textContent;
+            document.getElementById('stylePrompt').value = prompt;
+            closeDescriptionModal();
+            
+            // Scroll to style section
+            document.querySelector('.style-section').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('descriptionModal').addEventListener('click', (e) => {
+            if (e.target.id === 'descriptionModal') {
+                closeDescriptionModal();
+            }
+        });
+        
+        // Keyboard shortcuts for Undo/Redo
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+Z for Undo
+            if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+                e.preventDefault();
+                undo();
+            }
+            // Ctrl+Y or Ctrl+Shift+Z for Redo
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+                e.preventDefault();
+                redo();
+            }
+            // Delete/Backspace to delete selected text
+            if ((e.key === 'Delete' || e.key === 'Backspace') && selectedTextIndex !== null) {
+                // Don't delete if typing in edit panel input
+                if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+                    e.preventDefault();
+                    deleteSelectedText();
+                }
+            }
+            // Escape to close panels
+            if (e.key === 'Escape') {
+                closeEditPanel();
+                closeAIEditModal();
+                closeDescriptionModal();
+                selectedTextIndex = null;
+                drawCanvas();
             }
         });
     </script>
